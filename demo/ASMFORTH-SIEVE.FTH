@@ -1,0 +1,64 @@
+\ SIEVE in ASMFORTH for Camel99 Forth                 Feb 2023 Brian Fox
+\ based on code by @Reciprocating Bill atariage.com 
+
+\ Original notes by BIll.
+\ * SIEVE OF ERATOSTHENES ------------------------------------------
+\ * WSM 4/2022
+\ * TMS9900 assembly adapted from BYTE magazine 9/81 and 1/83 issues
+\ * 10 iterations 6.4 seconds on 16-bit console
+\ * ~10 seconds on stock console
+
+HOST 
+DECIMAL 
+8190 CONSTANT SIZE
+HEX 
+2000 CONSTANT FLAGS   \ array in Low RAM 
+
+ASMFORTH 
+SUB: FILLW ( addr size char --) \ nestable sub-routine 
+    R0 POP            \ size 
+    R1 POP            \ base of array
+    BEGIN
+        TOS R1 @+ !   \ write ones to FLAGS
+        R0 2-
+    NC UNTIL  
+    DROP 
+;SUB 
+
+HEX
+CODE DO-PRIME ( -- n)  
+  FLAGS # SIZE # 0101 # FILLW
+
+\ inits 
+   R0  OFF       \ clear loop index 
+   R3 OFF        \ 0 constant
+   FLAGS R5 LD   \ array base address 
+   SIZE  R8 LD   \ size 
+   0 #           \ counter on top of Forth stack 
+   SIZE # FOR 
+    R5 @+ R3 CMPB     \ FLAGS C@ 0= 
+    <> IF, 
+          R0 R1 !       \ I -> R1
+          R1 2*        
+          3 R1 [+]      \ R1 3+
+          R0 R2 !       \ I -> R2 ( R2 is K index) 
+          R1 R2 +       \ PRIME K +! 
+          BEGIN  
+            R2 R8 CMP   \ K SIZE COMPARE 
+          < WHILE  
+            R3 FLAGS (R2) C! \ no,reset @FLAGS(R2)
+            R1 R2 +     \ PRIME K +! 
+          REPEAT 
+          TOS 1+         \ increment count of primes
+    ENDIF, 
+    R0 1+                \ bump index register
+  NEXT 
+
+;CODE  
+
+DECIMAL 
+: PRIMES ( -- )
+   PAGE ."  10 Iterations"
+   10 0 DO   DO-PRIME  CR . ." primes"  LOOP
+   CR ." Done!"
+;
