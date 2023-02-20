@@ -81,7 +81,6 @@ If we choose to use the DATA stack it would look like this:
                     \ Stack item in NOS is removed. 
 
 #### Loops and Branches 
-
 Conventional Forth words IF, THEN, BEGIN, UNTIL etc. are used in ASMFORTH with an important difference. The CPU status register is used by default on conditional branches like IF WHILE or UNTIL.  This means that if you decrement a register with 1-, perform another operation, the status register will contain bits that signal the result of the operation. Word like IF respond to the status bits with the following comparison tokens: 
 -  =      equal 
 -  <>     not equal 
@@ -92,29 +91,17 @@ Conventional Forth words IF, THEN, BEGIN, UNTIL etc. are used in ASMFORTH with a
 -  U<     unsigned 
 -  U<=    unsigned 
 
-NOTE: Operators like '='  '<>' etc, are CPU specific here and test the EQ flag in the status register. To explicitly compare two registers we must use the compare instructions. (See further below)   
-
-####  Example loop using CPU status register
-```
-    HEX
-    CODE DOUNTIL 
-      FFFF #   \ DUP R4 and put a number into R4
-      BEGIN
-        TOS 1-
-      = UNTIL  \ loop until TOS gets to zero 
-      DROP
-    ;CODE
-
-```
+NOTE: Operators like '='  '<>' etc, are CPU specific here and test the EQ flag in the status register. 
 
 #### Register Comparisons
+To explicitly compare two registers we must use the compare instructions. 
 
-Two instructions allow us to for a comparison between registers, and/or memory locations.  CMP for 16 bits and CMPB for bytes.
+Two instructions allow us to do a comparison between registers, and/or memory locations.  CMP for 16 bits and CMPB for bytes.
 
 We can also compare a register or memory location to a literal value with 
 [CMP].  
 
-* It is an ASMForth convention that word in square brackets accepts a literal argument ( see: [+] [OR] [AND] )
+* It is an ASMForth convention that words in square brackets accept a literal argument ( see: [+] [OR] [AND] )
 
 ```    
     HEX
@@ -123,8 +110,8 @@ We can also compare a register or memory location to a literal value with
         FFFF #          \ push FFFF onto data stack 
         BEGIN
             TOS 1-      \ dec TOS 
-            TOS R0 CMP  \ compare to limit 
-        = UNTIL 
+            TOS R0 CMP  \ compare 2 registers 
+        = UNTIL         \ loop until TOS = R0 
         DROP 
     ;CODE 
 
@@ -139,5 +126,20 @@ We can also compare a register or memory location to a literal value with
     ;CODE 
 ```
 
+
+
+
+####  Example loop using CPU status register
+```
+    HEX
+    CODE DOUNTIL 
+      FFFF #   \ DUP R4 and put a number into R4
+      BEGIN
+        TOS 1-
+      = UNTIL  \ loop until TOS gets to zero 
+      DROP
+    ;CODE
+
+```
 
 
