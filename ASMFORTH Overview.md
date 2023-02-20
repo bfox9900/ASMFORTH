@@ -63,9 +63,11 @@ If we choose to use the DATA stack it would look like this:
 #### Loops and Branches 
 
 Conventional Forth words are used in ASMFORTH with an important difference. The CPU status register is used by default on conditional branches like IF WHILE or UNTIL.  This means that if you decrement a register with 1-  you can use IF with the set of operators like: =  <>  >  < 
+
 NOTE:  =  <> etc, are CPU specific here and test the EQ flag in the status register.     
 
 ####  Example 
+```python
     HEX
     CODE  DOUNTIL 
       FFFF #   \ DUP R4 and put a number into R4
@@ -74,3 +76,5 @@ NOTE:  =  <> etc, are CPU specific here and test the EQ flag in the status regis
       = UNTIL  \ loop until TOS gets to zero 
       DROP
     ;CODE
+
+```
