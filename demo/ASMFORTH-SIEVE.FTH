@@ -36,17 +36,17 @@ CODE DO-PRIME ( -- n)
    SIZE  R8 LD   \ size 
    0 #           \ counter on top of Forth stack 
    SIZE # FOR 
-    R5 @+ R3 CMPB     \ FLAGS C@ 0= 
-    <> IF 
+    R5 @+ R3 CMPB       \ FLAGS C@+ byte-compared to R3 (ie: 0)
+    <> IF               \ not equal to zero ? 
           R0 R1 !       \ I -> R1
           R1 2*        
           3 R1 [+]      \ R1 3+
           R0 R2 !       \ I -> R2 ( R2 is K index) 
           R1 R2 +       \ PRIME K +! 
           BEGIN  
-            R2 R8 CMP   \ K SIZE COMPARE 
+            R2 R8 CMP   \ K SIZE compare 
           < WHILE  
-            R3 FLAGS (R2) C! \ no,reset @FLAGS(R2)
+            R3 FLAGS (R2) C! \ reset byte FLAGS(R2)
             R1 R2 +     \ PRIME K +! 
           REPEAT 
           TOS 1+         \ increment count of primes

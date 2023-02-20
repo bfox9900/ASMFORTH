@@ -158,10 +158,11 @@ CR .( Forth Intrinics)
 : RPUSH  RPUSH, ; \ aliases from the assembler 
 : RPOP   RPOP,  ;
 
+\ ANS Forth operators use DATA stack.  
+\ Use RP register for Reg to Reg return stack access 
 : DUP>R  TOS RPUSH ;
 : >R    ( arg --) DUP>R TOS POP, ;
 : R>    ( arg --) TOS RPOP ;
-
 : R@    ( -- tos) TOS PUSH,  RP @ TOS ! ;
 
 .( .)

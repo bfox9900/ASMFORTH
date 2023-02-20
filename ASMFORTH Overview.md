@@ -39,8 +39,6 @@ The language then becomes something more akin to using Forth with local variable
                  \ increment R0 by 1 due to use of C!
 
 
-   
-
 #### Many 9900 instructions are one-to-one with ANS Forth
 
     ABS     ABS             ABS 
