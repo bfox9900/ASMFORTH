@@ -163,7 +163,7 @@ The examples use # which is the simplest way to do this.
 
 Setting up a FOR loop via TOS requires using DUP. 
 DUP pushes the TOS register onto the stack in memory.
-FOR will POP the value so the stack is clean after FOR is invoked 
+FOR will POP the value so the stack is clean after FOR is invoked.
 
 ```
     CODE TOSFORLOOP 
@@ -175,7 +175,8 @@ FOR will POP the value so the stack is clean after FOR is invoked
     ;CODE 
 ```
 
-
+## Sub-Routines
+ASMFORTH provides 
 
 
 
