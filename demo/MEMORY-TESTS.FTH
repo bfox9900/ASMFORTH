@@ -21,10 +21,6 @@ CODE FORLOOP
   R0 TOS !   \ put number in TOS for Forth to use  
 ;CODE    
 
-
-
-;CODE
-
 HEX
 CODE DOWHILE
       X R5 LD  \ put address of X into R5 

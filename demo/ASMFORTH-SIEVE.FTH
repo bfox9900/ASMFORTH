@@ -37,7 +37,7 @@ CODE DO-PRIME ( -- n)
    0 #           \ counter on top of Forth stack 
    SIZE # FOR 
     R5 @+ R3 CMPB     \ FLAGS C@ 0= 
-    <> IF, 
+    <> IF 
           R0 R1 !       \ I -> R1
           R1 2*        
           3 R1 [+]      \ R1 3+
@@ -50,7 +50,7 @@ CODE DO-PRIME ( -- n)
             R1 R2 +     \ PRIME K +! 
           REPEAT 
           TOS 1+         \ increment count of primes
-    ENDIF, 
+    THEN 
     R0 1+                \ bump index register
   NEXT 
 
