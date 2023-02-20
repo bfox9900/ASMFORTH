@@ -18,13 +18,13 @@ The language then becomes something more akin to using Forth with local variable
 
 ### Forth/9900 Memory Instruction Mapping
 
-Name    ASMForth       9900 
------   --------       -----
-Store    !              MOV 
-CStore  C!              MOVB 
-
-Fetch    @              signals indirect addressing on register argument
-Fetch++  @+             indirect addressing with auto-increment 
+    Name    ASMForth       9900 
+    -----   --------       -----
+    Store    !              MOV 
+    CStore  C!              MOVB 
+    
+    Fetch    @              signals indirect addressing on register argument
+    Fetch++  @+             indirect addressing with auto-increment 
 
 
 #### Examples
@@ -43,9 +43,9 @@ Fetch++  @+             indirect addressing with auto-increment
 
 #### Many 9900 instructions are one-to-one with ANS Forth
 
-ABS     ABS             ABS 
-Invert  INVERT          INV 
-Plus    +               A 
-XOR     XOR             XOR 
+    ABS     ABS             ABS 
+    Invert  INVERT          INV 
+    Plus    +               A 
+    XOR     XOR             XOR 
 
 
