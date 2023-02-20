@@ -142,6 +142,9 @@ We can also compare a register or memory location to a literal value with
 #### FOR/NEXT 
 Charles Moore's machine Forth include a FOR/NEXT loop that was minimal down counting, nest-able looping contruct. ASMFORTH II uses the return stack for the counter. This is slightly slower than counting with a register but if you loop contains a lot of code it will have little impact on the speed. 
 
+FOR requires the initial value to be in the TOS register.
+The examples use # which is the simplest way to do this. 
+
 ```
     ASMFORTH  
     DECIMAL
@@ -155,7 +158,23 @@ Charles Moore's machine Forth include a FOR/NEXT loop that was minimal down coun
            1000 # FOR
            NEXT
         NEXT
-    ;CODE
+    ;CODE 
+```
+
+Setting up a FOR loop via TOS requires using DUP. 
+DUP pushes the TOS register onto the stack in memory.
+FOR will POP the value so the stack is clean after FOR is invoked 
+
+```
+    CODE TOSFORLOOP 
+        DUP           \ save TOS register
+        65000 TOS LD  \ load a new value 
+        FOR 
+           R0 1+      \ do something in the loop 
+        NEXT 
+    ;CODE 
+```
+
 
 
 
