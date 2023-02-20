@@ -149,5 +149,14 @@ Charles Moore's machine Forth include a FOR/NEXT loop that was minimal down coun
       65535 # FOR  NEXT
     ;CODE
 
+    \ 1,000,000 iterations 
+    CODE FORNEST  \ 13.5 seconds
+        1000 # FOR
+            1000 # FOR
+        NEXT
+        NEXT
+    ;CODE
+
+
 
 
