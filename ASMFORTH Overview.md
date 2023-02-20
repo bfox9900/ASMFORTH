@@ -48,4 +48,29 @@ The language then becomes something more akin to using Forth with local variable
     Plus    +               A 
     XOR     XOR             XOR 
 
+The difference is that in ASMForth we must provide the Register names.
 
+    HEX
+    01 R0 LD   \ load R0 with 1 
+    R5 R0 XOR  
+
+If we choose to use the DATA stack it would look like this:
+
+    01 # 65 #       \ two numbers on data stack. 65 is in TOS register 
+    NOS @+ TOS XOR  \ XOR "next on stack with TOS. @+ pops NOS 
+                    \ result is in TOS register for future use 
+
+#### Loops and Branches 
+
+Conventional Forth words are used in ASMFORTH with an important difference. The CPU status register is used by default on conditional branches like IF WHILE or UNTIL.  This means that if you decrement a register with 1-  you can use IF with the set of operators like: =  <>  >  < 
+NOTE:  =  <> etc, are CPU specific here and test the EQ flag in the status register.     
+
+####  Example 
+    HEX
+    CODE  DOUNTIL 
+      FFFF #   \ DUP R4 and put a number into R4
+      BEGIN
+        TOS 1-
+      = UNTIL  \ loop until TOS gets to zero 
+      DROP
+    ;CODE
