@@ -86,7 +86,7 @@ Conventional Forth words IF, THEN, BEGIN, UNTIL etc. are used in ASMFORTH with a
 -  =      equal 
 -  <>     not equal 
 -  <      signed
--  >      singed 
+-  '>'    signed 
 -  U>     unsigned  
 -  U>=    unsigned 
 -  U<     unsigned 
