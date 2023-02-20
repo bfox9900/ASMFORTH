@@ -176,7 +176,34 @@ FOR will POP the value so the stack is clean after FOR is invoked.
 ```
 
 ## Sub-Routines
-ASMFORTH provides 
+ASMFORTH provides a SUB: directive that lets you make a native sub-routine that calls itself and can be nested inside other sub-routines.
+
+SUB: pushes the linkage register R11 onto the return stack and the does BRANCH and LINK to itself.  
+
+;SUB  Pops R11 off the return stack to complete the sub-routine.
+
+For more detail look at the source code for ASMFORTH.
+
+```
+    SUB: FILLW ( addr size char --) \ nestable sub-routine 
+        R0 POP            \ size 
+        R1 POP            \ base of array
+        BEGIN
+          TOS R1 @+ !   \ write ones to FLAGS
+          R0 2-
+        NC UNTIL  
+        DROP 
+    ;SUB 
+
+    HEX 
+    SUB: NESTED-CALLS
+       2000 #  1000 #  0000 # FILLW
+       E000 #  1000 #  BEEF # FILLW 
+    ;SUB 
+
+    
+
+
 
 
 
