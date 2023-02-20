@@ -82,7 +82,7 @@ If we choose to use the DATA stack it would look like this:
 
 #### Loops and Branches 
 
-Conventional Forth words are used in ASMFORTH with an important difference. The CPU status register is used by default on conditional branches like IF WHILE or UNTIL.  This means that if you decrement a register with 1-  you can use IF with the set of operators like: =  <>  >  < 
+Conventional Forth words IF,THE BEGIN UNTIL etc. are used in ASMFORTH with an important difference. The CPU status register is used by default on conditional branches like IF WHILE or UNTIL.  This means that if you decrement a register with 1-  you can use IF with the set of operators like: =  <>  >  < 
 
 NOTE: Operators like '='  '<>' etc, are CPU specific here and test the EQ flag in the status register. To explicitly compare two registers we must use the compare instructions. (See further below)   
 
