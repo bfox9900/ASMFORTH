@@ -126,9 +126,6 @@ We can also compare a register or memory location to a literal value with
     ;CODE 
 ```
 
-
-
-
 ####  Example loop using CPU status register
 ```
     HEX
@@ -141,5 +138,16 @@ We can also compare a register or memory location to a literal value with
     ;CODE
 
 ```
+
+#### FOR/NEXT 
+Charles Moore's machine Forth include a FOR/NEXT loop that was minimal down counting, nest-able looping contruct. ASMFORTH II uses the return stack for the counter. This is slightly slower than counting with a register but if you loop contains a lot of code it will have little impact on the speed. 
+
+```
+    ASMFORTH  
+    DECIMAL
+    CODE FORNEXT  \ .9 seconds simplest For/next loop 
+      65535 # FOR  NEXT
+    ;CODE
+
 
 
