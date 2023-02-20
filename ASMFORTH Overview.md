@@ -201,7 +201,10 @@ For more detail look at the source code for ASMFORTH.
        E000 #  1000 #  BEEF # FILLW 
     ;SUB 
 
-    
+ ## Some Assembly Required   
+ The Forth system on which ASMForth is built contains traditional Forth style Assembler for TMS9900 and the Assembler wordlist is in the HOST searchlist and also in the ASMFORTH searchlist.
+
+ So if you can't remember how to do something in ASMFORTH you can inleave Assembly language as need be. 
 
 
 
