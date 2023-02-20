@@ -203,9 +203,9 @@ For more detail look at the source code for ASMFORTH.
 ```
 
  ## Some Assembly Required   
- The Forth system on which ASMForth is built contains traditional Forth style Assembler for TMS9900 and the Assembler wordlist is in the HOST searchlist and also in the ASMFORTH searchlist.
+ The Forth system on which ASMForth is built contains a traditional Forth style Assembler for TMS9900 and the ASSEMBLER wordlist is in the HOST search order and also in the ASMFORTH search order.
 
- So if you can't remember how to do something in ASMFORTH you can inleave Assembly language as need be. 
+ So if you can't remember how to do something in ASMFORTH you can inter-leave Assembly language freely as needed.
 
 
 
