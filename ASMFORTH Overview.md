@@ -75,7 +75,7 @@ Conventional Forth words are used in ASMFORTH with an important difference. The 
 NOTE: Operators like '='  '<>' etc, are CPU specific here and test the EQ flag in the status register. To explicitly compare two registers we must use the compare instructions. (See further below)   
 
 ####  Example loop using CPU status register
-```FORTH
+```
     HEX
     CODE DOUNTIL 
       FFFF #   \ DUP R4 and put a number into R4
@@ -92,17 +92,31 @@ NOTE: Operators like '='  '<>' etc, are CPU specific here and test the EQ flag i
 Two instructions allow us to for a comparison between registers, and/or memory locations.  CMP for 16 bits and CMPB for bytes.
 
 We can also compare a register or memory location to a literal value with 
-[CMP]  It is an ASMForth convention that word in square brackets accept a literal argument 
+[CMP].  
 
-```
+* It is an ASMForth convention that word in square brackets accepts a literal argument ( see: [+] [OR] [AND] )
+
+```    
     HEX
-    88 R0 LD       \ load R0 with a limit value 
-    FFFF #         \ push FFFF onto data stack 
-    BEGIN
-       TOS 1-      \ dec TOS 
-       TOS R0 CMP  \ compare to limit 
-    = UNTIL 
-    DROP 
+    CODE REGLOOP 
+        88 R0 LD        \ load R0 with a limit value 
+        FFFF #          \ push FFFF onto data stack 
+        BEGIN
+            TOS 1-      \ dec TOS 
+            TOS R0 CMP  \ compare to limit 
+        = UNTIL 
+        DROP 
+    ;CODE 
+
+    HEX
+    CODE LITLOOP  
+        FFFF #           \ push FFFF onto data stack 
+        BEGIN
+            TOS 1-       \ dec TOS 
+            TOS 88 [CMP] \ compare to LITERAL limit 
+        = UNTIL 
+        DROP 
+    ;CODE 
 ```
 
 
