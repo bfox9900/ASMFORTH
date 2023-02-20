@@ -73,7 +73,7 @@ NOTE: Operators like '='  '<>' etc, are CPU specific here and test the EQ flag i
 ####  Example loop using CPU status register
 ```python
     HEX
-    CODE  DOUNTIL 
+    CODE DOUNTIL 
       FFFF #   \ DUP R4 and put a number into R4
       BEGIN
         TOS 1-
