@@ -71,7 +71,7 @@ Conventional Forth words are used in ASMFORTH with an important difference. The 
 NOTE: Operators like '='  '<>' etc, are CPU specific here and test the EQ flag in the status register. To explicitly compare two registers we must use the compare instructions. (See further below)   
 
 ####  Example loop using CPU status register
-```python
+```
     HEX
     CODE DOUNTIL 
       FFFF #   \ DUP R4 and put a number into R4
