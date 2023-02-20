@@ -3,13 +3,12 @@
 \ Type  COLD   to restart ASMFORTH II 
 
 HEX
-CODE  DOUNTIL 
+CODE  DOUNTIL  \ smallest loop 
       FFFF #   \ DUP R4 and put a number into R4
       BEGIN
-        TOS 1-
-        TOS 0= 
-      UNTIL
-      DROP
+        TOS 1- \ decrement a register 
+      = UNTIL  \ loop until TOS hits zero
+      DROP     \ clean the stack 
 ;CODE
 
 HEX
@@ -17,7 +16,7 @@ CODE DOWHILE
       FFFF #
       BEGIN
         TOS 1- 
-      NE WHILE 
+      <> WHILE 
         R5 2+  
       REPEAT
       DROP
