@@ -3,7 +3,7 @@
 \ Type  COLD   to restart ASMFORTH II 
 
 HEX
-CODE  DOUNTIL  \ smallest loop 
+CODE DOUNTIL  \ smallest loop 
       FFFF #   \ DUP R4 and put a number into R4
       BEGIN
         TOS 1- \ decrement a register 
