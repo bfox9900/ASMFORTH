@@ -34,6 +34,7 @@ Fetch++  @+             indirect addressing with auto-increment
                  \ increment R0 by 2 due to use of !  
 
 * When @+ is used with C! the increment is 1 
+
     R1 @+ R2 C!  \ get contents of address in R0 and store in R8
                  \ increment R0 by 1 due to use of C!
 
