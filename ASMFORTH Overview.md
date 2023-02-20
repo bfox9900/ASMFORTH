@@ -46,12 +46,13 @@ The language then becomes something more akin to using Forth with local variable
 
 #### Many 9900 instructions are one-to-one with ANS Forth
 
+    Name   Forth           9900
     ABS     ABS             ABS 
     Invert  INVERT          INV 
     Plus    +               A 
     XOR     XOR             XOR 
 
-The difference is that in ASMForth we must provide the Register names.
+The difference from Forth is that in ASMForth II we must provide the Register names.
 
     HEX
     01 R0 LD   \ load R0 with 1 
