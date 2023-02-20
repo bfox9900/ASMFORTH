@@ -139,16 +139,18 @@ CR .( Forth Intrinics)
 : 1-   ( arg -- )  DEC, ;
 : 2-   ( arg -- )  DECT, ;
 
-: +      ( arg arg )  ADD, ;     \ (option 1) add on stack
+: +      ( arg arg )  ADD, ;    
 : -      ( arg arg )  SUB, ;
-       
+
+: OR     ( arg arg )  SZC, ;       
+: XOR    ( n n -- n)  XOR, ;
+: AND    ( src dst --) SWAP INV,  SWAP  SZC, ;
+
 : #      ( n -- )  TOS PUSH,  TOS LD ;           \ literal to TOS
 : INVERT ( n -- )  INV, ;
-: AND    ( src dst --) SWAP INV,  SWAP   SZC, ;
 
 : [AND]  ( n arg -- n ) SWAP ANDI, ;   \ AND TOS with literal number
 : [OR]   ( n arg -- )   SWAP ORI, ;
-: XOR    ( n n -- n)    XOR, ;
 : [+]    ( n n -- )     SWAP AI, ;      \ (option 2) TOS + literal number
 
 \ ___________________________________________________________________
@@ -213,8 +215,10 @@ HEX
 : NOT    ( -- )  R1 STST,  R1 2000 ANDI, ;  \ invert EQ flag in status arg.
 
 \ 2 item stack comparisons. USE CMP or CMPB as required 
-: CMP   CMP, ;
-: CMPB  CMPB, ;
+: CMP   ( reg reg) CMP, ;
+: CMPB  ( reg reg) CMPB, ;
+: [CMP] ( reg lit) CI, ;  \ compare immediate needs a preceding literal 
+
 
 \ ASMFORTH aliases for jump tokens 
 : =      EQ ;
@@ -225,9 +229,6 @@ HEX
 : U>=    HE ;
 : U<     HI ;
 : U<=    LE ;
-
-: 0>    ( R -- ) 0 CI, GTE ;
-: 0=    ( R -- ) 0 CI, EQ ;
 
 CR .( branching and looping)
 ASMFORTH 
@@ -317,9 +318,11 @@ MACRO: UM* ( n n -- d) \ unsigned mixed multiply
     R5  NOS MOV, 
 ;MACRO 
 
-MACRO: CALL ( addr -- )
+MACRO: CALL ( arg -- ) 
+\ Use @ for call thru register 
+\ Use @@ for call thru variable 
     R11 RPUSH, 
-    @@ BL, 
+    BL, 
     R11 RPOP, 
 ;MACRO 
 
@@ -337,7 +340,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.6  Feb 2023"
+    PAGE ." ASMForth II  V0.61  Feb 2023"
     ASMFORTH
     ABORT ;
 
