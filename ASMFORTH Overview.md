@@ -60,10 +60,13 @@ The difference from Forth is that in ASMForth II we must provide the Register na
     R5 R0 XOR  
 
 If we choose to use the DATA stack it would look like this:
+( NOS is just an alias for the stack pointer register SP)
 
     01 # 65 #       \ two numbers on data stack. 65 is in TOS register 
-    NOS @+ TOS XOR  \ XOR "next on stack with TOS. @+ pops NOS 
+    NOS @+ TOS XOR  \ XOR "next on stack" with TOS. 
+                    \ @+ increments SP after XOR completes
                     \ result is in TOS register for future use 
+                    \ Stack item in NOS is removed. 
 
 #### Loops and Branches 
 
@@ -83,3 +86,24 @@ NOTE: Operators like '='  '<>' etc, are CPU specific here and test the EQ flag i
     ;CODE
 
 ```
+
+#### Register Comparisons
+
+Two instructions allow us to for a comparison between registers, and/or memory locations.  CMP for 16 bits and CMPB for bytes.
+
+We can also compare a register or memory location to a literal value with 
+[CMP]  It is an ASMForth convention that word in square brackets accept a literal argument 
+
+```
+    HEX
+    88 R0 LD       \ load R0 with a limit value 
+    FFFF #         \ push FFFF onto data stack 
+    BEGIN
+       TOS 1-      \ dec TOS 
+       TOS R0 CMP  \ compare to limit 
+    = UNTIL 
+    DROP 
+```
+
+
+
