@@ -149,12 +149,13 @@ CR .( Forth Intrinics)
 : XOR    ( n n -- n)  XOR, ;
 : AND    ( src dst --) SWAP INV,  SWAP  SZC, ;
 
-: #      ( n -- )  TOS PUSH,  TOS LD ;           \ literal to TOS
+: #      ( n -- )  TOS PUSH,  TOS LD ;  \ put literal into TOS
 : INVERT ( n -- )  INV, ;
 
-: #AND  ( n arg -- n ) SWAP ANDI, ;   \ AND TOS with literal number
-: #OR   ( n arg -- )   SWAP ORI, ;
-: #+    ( n n -- )     SWAP AI, ;      \ (option 2) TOS + literal number
+\ Immediate instructions compile a literal argument 
+: #AND  ( reg lit -- ) ANDI, ; 
+: #OR   ( reg lit -- )  ORI, ;
+: #+    ( reg lit -- )   AI, ;
 
 \ ___________________________________________________________________
 .(  return stack operators .)
@@ -162,11 +163,11 @@ CR .( Forth Intrinics)
 : RPOP   RPOP,  ;
 
 \ ANS Forth operators use DATA stack.  
-\ Use RP register for Reg to Reg return stack access 
+\ **Use RP register for Reg to Reg return stack access 
 : DUP>R  TOS RPUSH ;
-: >R    ( arg --) DUP>R TOS POP, ;
-: R>    ( arg --) TOS RPOP ;
-: R@    ( -- tos) TOS PUSH,  RP @ TOS ! ;
+: >R    ( n --) DUP>R TOS POP, ;
+: R>    ( -- n) TOS RPOP ;
+: R@    ( -- n) TOS PUSH,  RP @ TOS ! ;
 
 .( .)
 : LSHIFT   SLA,  ;
