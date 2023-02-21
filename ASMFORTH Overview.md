@@ -174,6 +174,32 @@ FOR will POP the value so the stack is clean after FOR is invoked.
         NEXT 
     ;CODE 
 ```
+## Index Through Memory
+The 9900 has the ability to use a register as an index into a memory block.
+You can also use indirect-addressing auto-incremented. Here some examples. 
+
+#### Remove Trailing Spaces Example 
+
+
+```
+    CREATE STR1 S" This string needs cleaning                     "  S,
+
+\ This word is called from Camel fORTH 
+    CODE -BLANKS ( addr len -- addr len )
+        NOS @ TOS +     \ compute end of string
+        TOS  1- 
+        R1 20 BYTE [LD] \ SPACE char in low byte 
+        BEGIN
+            TOS @ R1 CMPB
+        = WHILE
+            TOS 1-
+        REPEAT,
+        NOS TOS -
+        TOS 1+
+    ;CODE
+
+
+
 
 ## Sub-Routines
 ASMFORTH provides a SUB: directive that lets you make a native sub-routine that calls itself and can be nested inside other sub-routines.
