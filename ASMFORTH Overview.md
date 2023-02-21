@@ -188,7 +188,7 @@ You can also use indirect-addressing auto-incremented. Here some examples.
     CODE -BLANKS ( addr len -- addr len )
         NOS @ TOS +     \ compute end of string
         TOS  1- 
-        R1 20 BYTE LD \ SPACE char in low byte 
+        20 BYTE R1 LD   \ SPACE char in low byte 
         BEGIN
             TOS @ R1 CMPB
         = WHILE
