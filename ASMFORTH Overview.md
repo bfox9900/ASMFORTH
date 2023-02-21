@@ -131,10 +131,11 @@ To explicitly compare two registers we must use the compare instructions.
 Two instructions allow us to do a comparison between registers, and/or 
 memory locations. CMP for 16 bits and CMPB for bytes.
 
-We can also compare a register or memory location to a literal value with [CMP].  
+We can also compare a register or memory location to a literal value with #CMP.  
 
-* It is an ASMForth convention that words in square brackets accept a 
-  literal argument ( see: [+] [OR] [AND] )
+* It is an ASMForth convention that words that begin with '#'
+  literal argument. They are typically "immediate" instructions
+  in 9900 Assembler. ( see: #+ #OR #AND )
 
 ```    
     HEX
