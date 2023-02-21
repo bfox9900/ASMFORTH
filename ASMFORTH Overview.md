@@ -65,7 +65,7 @@ provides extra space "underneath" it in the data stack.
                  \ increment R0 by 1 due to use of C!
 
 #### NOTE
-If this notation seems confusing you are free to continue to use the Forth Assembler verions:
+If this notation seems confusing you are free to continue to use the Forth Assembler versions:
 - **  is indirect addressing ( ASMFORTH @ )
 - *+ is indirect-addressing with auto-incrment ( ASMFORTH @+ )
 
