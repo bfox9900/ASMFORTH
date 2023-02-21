@@ -35,12 +35,8 @@ In fact:
 
 #### *ALL Registers must be explicitly reference in ASMFORTH*
 
-This is a radical difference to conventional Forth Assemblers. 
-The language then becomes something more akin to using Forth with local 
-variables where the local variables are actually machine registers.  Since
-we need to reserve some registers for the Forth architecure and the 9900 
-cPU has R11 and R12 reserved for special purposes we are left with ten free
-registers. One of those ten is the top of data stack cache register which
+This is no different than conventional Forth Assemblers. 
+ASMFORTH is something more akin to using Forth with local variables where the local variables are actually machine registers.  Since we need to reserve some registers for the Forth architecure and the 9900 CPU has R11 and R12 reserved for special purposes we are left with ten free registers. One of those ten is the top of data stack cache register which
 provides extra space "underneath" it in the data stack. 
 
 ## Examples
@@ -271,7 +267,7 @@ For more detail look at the source code for ASMFORTH.
  order and also in the ASMFORTH search order.
 
  So if you can't remember how to do something in ASMFORTH you can inter-leave
-  Assembly language freely as needed.
+ Assembly language freely as needed.
 
 
 
