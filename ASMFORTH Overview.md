@@ -64,6 +64,11 @@ provides extra space "underneath" it in the data stack.
     R1 @+ R2 C!  \ get contents of address in R0 and store in R8
                  \ increment R0 by 1 due to use of C!
 
+#### NOTE
+If this notation seems confusing you are free to continue to use the Forth Assembler verions:
+- **  is indirect addressing ( ASMFORTH @ )
+- *+ is indirect-addressing with auto-incrment ( ASMFORTH @+ )
+
 #### Memory to Memory 
 The 9900 is a memory to memory architecture and so ignoring that ability just
 uses more instruction needlessly. The double-fetch @@ lets us use this feature.
