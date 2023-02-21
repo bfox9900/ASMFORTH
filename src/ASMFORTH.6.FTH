@@ -103,6 +103,9 @@ HEX
 
 \ load register 
 : LD     ( n REG -- ) DUP ?REGISTER SWAP LI, ; \ n -> REG
+: BYTE   ( 0c --  0c00 )  ><  ; \ swap byte to other side of register 
+\ useage:   BEEF R1 LD  
+\           02 BYTE R1 LD   \ load 02 as low bits of R1 
 
 \ Named stack items (in memory)
 : NOS   SP  ;    \ Next on Stack
