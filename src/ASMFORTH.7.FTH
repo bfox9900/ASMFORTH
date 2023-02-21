@@ -345,7 +345,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.61  Feb 2023"
+    PAGE ." ASMForth II  V0.7  Feb 2023"
     ASMFORTH
     ABORT ;
 

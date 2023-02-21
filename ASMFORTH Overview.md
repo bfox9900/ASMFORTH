@@ -154,7 +154,7 @@ We can also compare a register or memory location to a literal value with #CMP.
         FFFF #           \ push FFFF onto data stack 
         BEGIN
             TOS 1-       \ dec TOS 
-            TOS 88 [CMP] \ compare to LITERAL limit 
+            TOS 88 #CMP \ compare to LITERAL limit 
         = UNTIL 
         DROP 
     ;CODE 

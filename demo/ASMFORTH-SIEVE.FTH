@@ -40,7 +40,7 @@ CODE DO-PRIME ( -- n)
     <> IF               \ not equal to zero ? 
           R0 R1 !       \ I -> R1
           R1 2*        
-          3 R1 [+]      \ R1 3+
+          R1 3 #+      \ R1 3+
           R0 R2 !       \ I -> R2 ( R2 is K index) 
           R1 R2 +       \ PRIME K +! 
           BEGIN  
