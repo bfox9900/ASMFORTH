@@ -182,24 +182,24 @@ You can also use indirect-addressing auto-incremented. Here some examples.
 
 
 ```
-    CREATE STR1 S" This string needs cleaning                     "  S,
 
-\ This word is called from Camel fORTH 
-    CODE -BLANKS ( addr len -- addr len )
+\ This word is called from Camel Forth
+    CODE -TRAILING ( addr len -- addr len' )
         NOS @ TOS +     \ compute end of string
-        TOS  1- 
-        20 BYTE R1 LD   \ SPACE char in low byte 
+        TOS  1-         \ TOS has address of last char 
+        32 BYTE R1 LD   \ SPACE char in low byte 
         BEGIN
-            TOS @ R1 CMPB
+            TOS @ R1 CMPB \ compare last char to ascii 21 (space)
         = WHILE
-            TOS 1-
+            TOS 1-        \ point to previous character 
         REPEAT,
-        NOS TOS -
-        TOS 1+
+        NOS TOS -         \ subtract to compute new length 
+        TOS 1+            \ correct by 1 
     ;CODE
 
-
-
+\ Usage in forth:  
+\ CREATE STR1 S" This string needs cleaning                     "  S,
+\ STR1 COUNT -TRAILING TYPE 
 
 ## Sub-Routines
 ASMFORTH provides a SUB: directive that lets you make a native sub-routine that calls itself and can be nested inside other sub-routines.
