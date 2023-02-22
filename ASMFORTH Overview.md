@@ -292,7 +292,7 @@ This is the command that invokes tail-call optimization.
  order and also in the ASMFORTH search order.
 
  So if you can't remember how to do something in ASMFORTH you can inter-leave
- Assembly language freely as needed.
+ Forth Assembly language freely as needed.
 
 
 
