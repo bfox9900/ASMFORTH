@@ -325,7 +325,7 @@ MACRO: UM* ( n n -- d) \ unsigned mixed multiply
 
 MACRO: CALL ( arg -- ) 
 \ Use @ for call thru register 
-\ Use @@ for call thru variable 
+\ Use @@ for call to an address 
     R11 RPUSH, 
     BL, 
     R11 RPOP, 
@@ -336,7 +336,7 @@ MACRO: CALL ( arg -- )
 
 ASMFORTH ALSO FORTH DEFINITIONS 
 : NEW.  \ erases the MFORTH definitions AFTER '*MFORTHEND*'
-        ['] *MFORTHEND* CFA>NFA  ['] MFORTH >BODY ! ;
+    ['] *MFORTHEND* CFA>NFA  ['] MFORTH >BODY ! ;
 
 HOST 
 HEX
