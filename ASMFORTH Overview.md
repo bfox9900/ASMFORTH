@@ -266,6 +266,25 @@ For more detail look at the source code for ASMFORTH.
        E000 #  1000 #  BEEF # FILLW 
     ;SUB 
 ```
+### Tail Call Optimization
+Something that Charles Moore added to machine Forth was tail-call Optimization.
+This can be used if a sub-routine calls another sub-routine as the last function in the code.  What tail-call optimiziation does is replace the branch and link instruction with simple branch and enters that sub-routine without pushing R11 onto the return stack.  This speeds up the call and the return stack does not grow larger. Less return stack usage can be very important if you write a recursive sub-routine in Assembler. 
+
+For example in the code above, since NEST-CALLS is calling FILLW as the last line we could re-write it like this:
+
+```
+    HEX 
+    SUB: NESTED-CALLS
+       2000 #  1000 #  0000 # FILLW
+       E000 #  1000 #  BEEF # FILLW 
+    -;SUB 
+```
+Notice the use of -;SUB 
+This is the command that invokes tail-call optimization.
+
+**WARNING** If you use -;STACK with CPU instruction primitive as the last line, the code sill crash. 
+
+
 
  ## Some Assembly Required   
  The Forth system on which ASMForth is built contains a traditional Forth 
