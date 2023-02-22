@@ -42,42 +42,45 @@ provides extra space "underneath" it in the data stack.
 ## Examples
 
 ### Forth/9900 Memory Instruction Mapping
-
     Name    ASMForth       9900 
     -----   --------       -----
     Store    !              MOV 
     CStore  C!              MOVB 
 
-    Fetch    @              signals indirect addressing on register argument
+    Fetch    @              do indirect addressing on register argument
     Fetch++  @+             indirect addressing with auto-increment 
 
+#### Store contents of a register in another register
+    R3 R5 !  
 
-#### Register to Register 
+#### Fetch from the Address in a Register to a Register 
     RO @ R5 !    \ get contents of address in R0 and store in R5 
 
-#### Address in Register to Register     
+#### Fetch from the Address in a Register with auto-increment    
     R0 @+ R8 !   \ get contents of address in R0 and store in R8
                  \ increment R0 by 2 due to use of !  
 
-#### When @+ is used with C! the increment is 1 
+#### When @+ is used with C! the auto-increment value is 1 
+    R1 @+ R2 C!  \ get contents of address in R0 and store in R2
+                 \ increment R0 by 1 due to use of C! (character store)
 
-    R1 @+ R2 C!  \ get contents of address in R0 and store in R8
-                 \ increment R0 by 1 due to use of C!
+**NOTE**
+If this notation seems confusing you are free to continue to use the Forth Assembler notation for addressing modes. The Assembler wordlist is in the ASMFORTH search order.
 
-#### NOTE
-If this notation seems confusing you are free to continue to use the Forth Assembler versions:
-- **  is indirect addressing ( ASMFORTH @ )
-- *+ is indirect-addressing with auto-incrment ( ASMFORTH @+ )
+- R3 **  is indirect addressing ( ASMFORTH @ )
+- R3 *+ is indirect-addressing with auto-incrment ( ASMFORTH @+ )
+- R3 @@ symbolic addressing (same)
+- R3 () indexed addressing 
 
 #### Memory to Memory 
 The 9900 is a memory to memory architecture and so ignoring that ability just
-uses more instruction needlessly. The double-fetch @@ lets us use this feature.
+uses more instructions needlessly. The double-fetch @@ lets us use this feature.
 
 ```
     VARIABLE X  VARIABLE Y
 
-    X @@ R1 !       \ fetch from X store in R1  ie: MOV @X,R1 
-    Y @@ X @@ !     \ move contents of Y into X 
+    X @@ R1 !       \ fetch value from X and store in R1  ie: MOV @X,R1 
+    Y @@ X @@ !     \ move contents of Y into X (memory to memory)
 ```
 
 
@@ -90,8 +93,8 @@ uses more instruction needlessly. The double-fetch @@ lets us use this feature.
     Plus    +           A 
     XOR     XOR         XOR 
 
-The difference from Forth is that in ASMForth II we must provide the Register
-names.
+The difference from conventional Forth is that in ASMForth II we must provide
+the Register names.
 
     HEX
     01 R0 LD   \ load R0 with 1 
@@ -100,9 +103,9 @@ names.
 If we choose to use the DATA stack it would look like this:
 ( NOS is just an alias for the stack pointer register SP)
 
-    01 # 65 #       \ two numbers on data stack. 65 is in TOS register 
+    01 # 65 #       \ put two numbers on data stack. 65 is in TOS register 
     NOS @+ TOS XOR  \ XOR "next on stack" with TOS. 
-                    \ @+ increments SP after XOR completes
+                    \ @+ does an automatic 'POP' of NOS after XOR completes
                     \ result is in TOS register for future use 
                     \ Stack item in NOS is removed. 
 
@@ -283,7 +286,6 @@ Notice the use of -;SUB at the end.
 This is the command that invokes tail-call optimization.
 
 **WARNING** If you use -;SUB with a CPU instruction primitive line + or !, as the last line, the code will crash. 
-
 
 
  ## Some Assembly Required   
