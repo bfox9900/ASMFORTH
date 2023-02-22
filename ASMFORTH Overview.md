@@ -219,7 +219,6 @@ You can also use indirect-addressing auto-incremented. Here some examples.
 
 
 ```
-
 \ This word is called from Camel Forth
     CODE -TRAILING ( addr len -- addr len' )
         NOS @ TOS +     \ compute end of string
@@ -237,6 +236,7 @@ You can also use indirect-addressing auto-incremented. Here some examples.
 \ Usage in forth:  
 \ CREATE STR1 S" This string needs cleaning                     "  S,
 \ STR1 COUNT -TRAILING TYPE 
+```
 
 ## Sub-Routines
 ASMFORTH provides a SUB: directive that lets you make a native sub-routine
