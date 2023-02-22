@@ -282,7 +282,7 @@ For example in the code above, since NEST-CALLS is calling FILLW as the last lin
 Notice the use of -;SUB 
 This is the command that invokes tail-call optimization.
 
-**WARNING** If you use -;STACK with CPU instruction primitive as the last line, the code sill crash. 
+**WARNING** If you use -;SUB with CPU instruction primitive as the last line, the code sill crash. 
 
 
 
