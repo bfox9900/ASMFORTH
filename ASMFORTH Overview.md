@@ -279,10 +279,10 @@ For example in the code above, since NEST-CALLS is calling FILLW as the last lin
        E000 #  1000 #  BEEF # FILLW 
     -;SUB 
 ```
-Notice the use of -;SUB 
+Notice the use of -;SUB at the end.
 This is the command that invokes tail-call optimization.
 
-**WARNING** If you use -;SUB with CPU instruction primitive as the last line, the code sill crash. 
+**WARNING** If you use -;SUB with a CPU instruction primitive line + or !, as the last line, the code will crash. 
 
 
 
