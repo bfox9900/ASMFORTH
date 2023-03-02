@@ -17,6 +17,8 @@
 \ 7. TOS register can as the accumulator for computation 
 \ 8. DATA stack is available with PUSH POP DUP DROP SP Register
 \ 9. Return stack is available with RPUSH RPOP R@   RP register
+\ Mar 1 2023
+\ 10. Changed LD to #! to be consistent with other immediate instructions
 
 \                 Code comparisons
 \ TI Assembler Syntax        ASMForth Syntax 
@@ -101,8 +103,8 @@ HEX
 
 : EQU   CONSTANT ; \ alias 
 
-\ load register 
-: LD     ( n REG -- ) DUP ?REGISTER SWAP LI, ; \ n -> REG
+\ load register with immediate argument 
+: #!    ( n REG -- ) DUP ?REGISTER SWAP LI, ; \ n -> REG
 : BYTE   ( 0c --  0c00 )  ><  ; \ swap byte to other side of register 
 \ useage:   BEEF R1 LD  
 \           02 BYTE R1 LD   \ load 02 as low bits of R1 
@@ -149,7 +151,7 @@ CR .( Forth Intrinics)
 : XOR    ( n n -- n)  XOR, ;
 : AND    ( src dst --) SWAP INV,  SWAP  SZC, ;
 
-: #      ( n -- )  TOS PUSH,  TOS LD ;  \ put literal into TOS
+: #      ( n -- )  TOS PUSH,  TOS #! ;  \ put literal into TOS
 : INVERT ( n -- )  INV, ;
 
 \ Immediate instructions compile a literal argument 
@@ -345,7 +347,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.7  Feb 2023"
+    PAGE ." ASMForth II  V0.71 Mar 1 2023"
     ASMFORTH
     ABORT ;
 
