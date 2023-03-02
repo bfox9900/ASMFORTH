@@ -1,4 +1,4 @@
-\ SIEVE in ASMFORTH for Camel99 Forth                 Feb 2023 Brian Fox
+\ SIEVE in ASMFORTH for Camel99 Forth                 Mar 1 2023 Brian Fox
 \ based on code by @Reciprocating Bill atariage.com 
 
 \ Original notes by BIll.
@@ -18,13 +18,12 @@ HEX
 
 ASMFORTH 
 SUB: FILLW ( addr size char --) \ nestable sub-routine 
-    R0 POP            \ size 
-    R1 POP            \ base of array
-    BEGIN
-        TOS R1 @+ !   \ write ones to FLAGS
-        R0 2-
-    NC UNTIL  
-    DROP 
+    TOS R0 !        \ char -> R0 
+    TOS POP         \ size in TOS for FOR to pickup 
+    R1  POP         \ Memory location in R1
+    FOR
+       R0 R1 @+ !   \ write ones to FLAGS
+    NEXT2           \ *NEW* allows CELL based down counting 
 ;SUB 
 
 HEX

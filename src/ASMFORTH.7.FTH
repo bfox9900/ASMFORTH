@@ -303,8 +303,9 @@ CR .( FOR/NEXT)
 \ Use  R@  as a loop index.  Use  nn RP @ 1-  to STEP down faster.
 \ Use a register if you need an up-counter
 
-: FOR  ( n --)  >R  BEGIN, ; \ n must be in TOS register 
-: NEXT ( -- )   RP @ 1-   NC UNTIL, RDROP ;
+: FOR   ( n --)  >R  BEGIN, ; \ n must be in TOS register 
+: NEXT  ( -- )   RP @ 1-   NC UNTIL, RDROP ;
+: NEXT2          RP @ 2-   NC UNTIL, RDROP ; 
 
 \ Hi-level Forth examples 
 MACRO: COUNT  ( Caddr -- addr len )
@@ -347,7 +348,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.71 Mar 1 2023"
+    PAGE ." ASMForth II  V0.72 Mar 1 2023"
     ASMFORTH
     ABORT ;
 
