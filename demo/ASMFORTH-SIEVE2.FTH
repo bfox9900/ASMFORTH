@@ -8,6 +8,8 @@
 \ * 10 iterations 6.4 seconds on 16-bit console
 \ * ~10 seconds on stock console
 
+\ Removed use of size in R8. Used immediate compare 
+
 HOST 
 DECIMAL 
 8190 CONSTANT SIZE
@@ -25,8 +27,6 @@ SUB: FILLW ( addr size char --) \ nestable sub-routine
     DROP 
 ;SUB 
 
-
-
 HEX
 CODE DO-PRIME ( -- n)  
   FLAGS # SIZE # 0101 # FILLW
@@ -35,7 +35,6 @@ CODE DO-PRIME ( -- n)
    R0 OFF        \ clear loop index 
    R3 OFF        \ 0 constant
    FLAGS R5 #!   \ array base address 
-   SIZE  R8 #!   \ size 
    0 #           \ counter on top of Forth stack 
    SIZE # FOR 
     R5 @+ R3 CMPB       \ FLAGS C@+ byte-compared to R3 (ie: 0)
@@ -45,7 +44,7 @@ CODE DO-PRIME ( -- n)
           R0 R2 !       \ I -> R2 ( R2 is K index) 
           R1 R2 +       \ PRIME K +! 
           BEGIN  
-            R2 R8 CMP   \ K SIZE compare 
+            R2 SIZE #CMP  \ K SIZE compare 
           < WHILE  
             R3 FLAGS (R2) C! \ reset byte FLAGS(R2)
             R1 R2 +     \ PRIME K +! 
