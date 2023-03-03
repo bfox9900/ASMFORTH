@@ -17,7 +17,6 @@ DECIMAL 8190 CONSTANT SIZE
 HEX     2000 CONSTANT FLAGS   \ array in Low RAM 
 
 ASMFORTH 
-HEX
 CODE DO-PRIME ( -- n)  
 \ inits 
    R0 OFF        \ clear loop index 
