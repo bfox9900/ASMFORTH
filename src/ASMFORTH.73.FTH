@@ -93,8 +93,8 @@ ALSO ASSEMBLER DEFINITIONS
 : MACRO:  :  ;
 
 \ Named stack items (in memory)
-: NOS   *SP  ;    \ Next on Stack
-: NOS+  *SP+ ;    \ Can be used instead of POP: NOS+ TOS ! 
+: NOS   *SP  ;    \ Next on Stack register
+: NOS^  *SP+ ;    \ Use NOS and the pop it 
 : 3RD   2 (SP) ;
 : 4TH   4 (SP) ;
 : 5TH   6 (SP) ;

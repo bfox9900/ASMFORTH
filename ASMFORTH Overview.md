@@ -52,7 +52,7 @@ being the Registers used for DATA stack operations.
 
 : TOS    R4  ;    \ cache for the top of stack item
 : NOS   *SP  ;    \ Next on Stack
-: NOS+  *SP+ ;    \ Can be used instead of POP: NOS+ TOS ! 
+: NOS^  *SP+ ;    \ NOS^ removes pops itself automatically
 
 These would not typically be needed because we can used hardware registers like
 local variables, but they are easily accessed by the 9900 architecture. 
@@ -112,23 +112,18 @@ DATA stack with the caveat that we use the TOS and NOS registers.
 Addition Example:
 ```
     45 #  7 #    \ push 2 numbers onto the DATA stack. NOS=45 TOS=7 
-    NOS+ TOS +   \ TOS=52  NOS is removed from stack memory 
+    NOS^ TOS +   \ TOS=52  NOS is removed from stack memory 
 ```
 
 These Forth operations are also available in ASMForth.
-The code is simple to understand 
+Their code is simple to understand 
 ```
-: DUP   ( n -- n n) TOS PUSH, ;
-: DROP  ( n -- )    TOS POP,  ;
+: DUP   ( n -- n n) TOS PUSH ;
+: DROP  ( n -- )    TOS POP  ;
 : NIP   ( n1 n2 -- n2) SP 2+ ;
 : OVER  ( n1 n2 -- n1 n2 n1)  DUP  3RD TOS ! ;
 : 2DROP ( n n --)   DROP DROP ;
 ```
-
-
-
-
-
 
 #### Many 9900 instructions are one-to-one with ANS Forth
 
@@ -150,8 +145,8 @@ If we choose to use the DATA stack it would look like this:
 ( NOS is just an alias for the stack pointer register SP)
 
     01 # 65 #       \ put two numbers on data stack. 65 is in TOS register 
-    NOS @+ TOS XOR  \ XOR "next on stack" with TOS. 
-                    \ @+ does an automatic 'POP' of NOS after XOR completes
+    NOS^ TOS XOR    \ XOR "next on stack" with TOS. 
+                    \ NOS^ does an automatic 'POP' of NOS after XOR completes
                     \ result is in TOS register for future use 
                     \ Stack item in NOS is removed. 
 
@@ -270,7 +265,7 @@ You can also use indirect-addressing auto-incremented. Here some examples.
 ```
 \ This word is called from Camel Forth
     CODE -TRAILING ( addr len -- addr len' )
-        NOS @ TOS +     \ compute end of string
+        NOS^ TOS +       \ compute end of string
         TOS  1-         \ TOS has address of last char 
         32 BYTE R1 LD   \ SPACE char in low byte 
         BEGIN
@@ -278,7 +273,7 @@ You can also use indirect-addressing auto-incremented. Here some examples.
         = WHILE
             TOS 1-        \ point to previous character 
         REPEAT,
-        NOS TOS -         \ subtract to compute new length 
+        NOS^ TOS -         \ subtract to compute new length 
         TOS 1+            \ correct by 1 
     ;CODE
 
