@@ -13,10 +13,8 @@
 \ This version uses the library FILLW rather than coding it in Forth 
 
 HOST 
-DECIMAL 
-8190 CONSTANT SIZE
-HEX 
-2000 CONSTANT FLAGS   \ array in Low RAM 
+DECIMAL 8190 CONSTANT SIZE
+HEX     2000 CONSTANT FLAGS   \ array in Low RAM 
 
 ASMFORTH 
 HEX
