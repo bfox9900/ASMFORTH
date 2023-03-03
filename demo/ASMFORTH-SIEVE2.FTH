@@ -53,7 +53,7 @@ ASMFORTH
 
 HEX
 CODE DO-PRIME ( -- n)  \ code words can be called from Forth 
-    PRIME-MOVER     
+    PRIME-MOVER        \ ASMForth colon words are called from CODE words
 ;CODE  
 
 ONLY FORTH ALSO MFORTH ALSO FORTH DEFINITIONS 

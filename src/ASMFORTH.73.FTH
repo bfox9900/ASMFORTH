@@ -82,10 +82,12 @@ INCLUDE DSK1.ASM9900
 HERE
 
 : HOST     
-  ONLY FORTH ALSO ASSEMBLER ALSO FORTH DEFINITIONS  ;
+  ONLY FORTH ALSO ASSEMBLER ALSO MFORTH ALSO FORTH DEFINITIONS ; 
 
 : ASMFORTH 
   ONLY FORTH ALSO ASSEMBLER ALSO MFORTH DEFINITIONS ;
+
+
 
 \ compile forth words that will Assemble code when executed
 ALSO ASSEMBLER DEFINITIONS 
@@ -108,6 +110,17 @@ ALSO ASSEMBLER DEFINITIONS
 : (R13)  R13 () ;   : (R14)  R14 () ;   : (R15)  R15 () ;
 
 ASMFORTH  
+\ fetch previous instruction code
+: LOOKBACK ( -- u)  HERE 2- @ ;
+
+\ tail call optimizing ;SUB. USE ONLY IF LAST WORD IS SUB:
+: -; ( --  )
+    LOOKBACK   ( addr )   \ get entry address of sub-routine
+    2 CELLS +  ( addr' )  \ move past the sub-routine ENTRY instructions
+    -04 ALLOT             \ erase BL @addr
+    ( addr') @@ B,       \ compile a branch to the NEW sub-routine
+; 
+
 DECIMAL
 : REG?      ( n -- ?) 0 16 WITHIN ;
 : ADDRESS?  ( n -- ?) 8191 > ; \ lowest RAM address is 8192 
@@ -325,16 +338,6 @@ MACRO: :
 \ "exit sub-routine" ( 2 instructions)
 MACRO: ;   ?CSP  R11 RPOP,  RT, ;MACRO 
 
-\ fetch previous instruction code
-MACRO: LOOKBACK ( -- u)  HERE 2- @ ;MACRO
-
-\ tail call optimizing ;SUB. USE ONLY IF LAST WORD IS SUB:
-MACRO: -; ( --  )
-    LOOKBACK   ( addr )   \ get entry address of sub-routine
-    2 CELLS +  ( addr' )  \ move past the sub-routine ENTRY instructions
-    -04 ALLOT             \ erase BL @addr
-    ( addr') @@ B,       \ compile a branch to the NEW sub-routine
-;MACRO 
 
 MACRO: *MFORTHEND* ;MACRO 
 \ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
