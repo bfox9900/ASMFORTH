@@ -2,8 +2,10 @@
 
 ## Background
 ASMFORTH II is the result of experiments in creating a "machine Forth" for 
-the TI-99. Machine Forth is an idea create by Charles Moore, the inventor of
- Forth, during the time that he was developing his own two-stack CPUs.
+the TI-99. Machine Forth is an idea created by Charles Moore, the inventor of
+ Forth, during the time that he was developing his own two-stack CPUs. 
+ Machine Forth could be thought of as the Assembler for Chuck's two stack
+ architecture CPUs.
 
 Machine Forth drives the simplicity of code generation to an extreme. The
 primitive operations of the Forth language like fetch, store or plus directly
@@ -17,16 +19,18 @@ to get that same language to architecture match, but for a machine that is not
 a stack machine. 
 
 #### Why ASMFORTH
-There is no way to extract the full performance out of the CPU without using 
-the native architecture. ASMFORTH is just an Assembler that uses Forth naming 
-conventions rather than the mnemonics provided by Texas Instruments. The goal 
-is to reduce the distraction of moving from Forth to Assembler by keeping the 
-nomeclature similar. Traditional Forth assemblers go half the way by using 
-structured branching and looping so I just move farther in that direction. 
-
 Early experiments with a machine Forth for 9900 kept the Forth environment and
- all computational operations required the use of the data stack. The RPN 
- Forth Assembler was also available but they existed as two separate languages.
+all computational operations required the use of the data stack. The RPN 
+Forth Assembler was available but they existed as two separate languages.
+
+We found there is no way to extract the full performance out of the CPU without 
+using the native architecture. ASMFORTH is therefore just an Assembler that 
+uses Forth naming conventions rather than the mnemonics provided by Texas 
+Instruments. The goal is to reduce the distraction of moving from Forth to
+Assembler by keeping the nomeclature similar. Traditional Forth assemblers 
+go half the way by using structured branching and looping so I just move 
+farther in that direction. 
+
 
 In ASMFORTH II we keep the Forth two stack architecture but add to it the 
 ability to use the 9900 register system directly. 
@@ -35,11 +39,27 @@ In fact:
 
 #### *ALL Registers must be explicitly reference in ASMFORTH*
 
-This is no different than conventional Forth Assemblers. 
+This is the same as conventional Forth Assemblers. 
 ASMFORTH is something more akin to using Forth with local variables where the local variables are actually machine registers.  Since we need to reserve some registers for the Forth architecure and the 9900 CPU has R11 and R12 reserved for special purposes we are left with ten free registers. One of those ten is the top of data stack cache register which
 provides extra space "underneath" it in the data stack. 
 
 ## Examples
+
+### Named Registers
+Registers are re-named to mimic a Forth CPU with TOS (top of stack) and NOS (next on stack)
+being the Registers used for DATA stack operations. 
+: TOS   R4   ;    \ cache for the top of stack item
+: NOS   *SP  ;    \ Next on Stack
+: NOS+  *SP+ ;    \ Can be used instead of POP: NOS+ TOS ! 
+
+These would not typically be needed because we can used hardware registers like
+local variables, but they are easily accessed by the 9900 architecture. 
+
+: 3RD   2 (SP) ;
+: 4TH   4 (SP) ;
+: 5TH   6 (SP) ;
+: 6TH   8 (SP) ;
+
 
 ### Forth/9900 Memory Instruction Mapping
     Name    ASMForth       9900 
