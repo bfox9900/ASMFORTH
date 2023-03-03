@@ -87,8 +87,6 @@ HERE
 : ASMFORTH 
   ONLY FORTH ALSO ASSEMBLER ALSO MFORTH DEFINITIONS ;
 
-
-
 \ compile forth words that will Assemble code when executed
 ALSO ASSEMBLER DEFINITIONS 
 : ;MACRO   POSTPONE ;  ;  IMMEDIATE
@@ -116,9 +114,9 @@ ASMFORTH
 \ tail call optimizing ;SUB. USE ONLY IF LAST WORD IS SUB:
 : -; ( --  )
     LOOKBACK   ( addr )   \ get entry address of sub-routine
-    2 CELLS +  ( addr' )  \ move past the sub-routine ENTRY instructions
-    -04 ALLOT             \ erase BL @addr
-    ( addr') @@ B,       \ compile a branch to the NEW sub-routine
+    2 CELLS +  ( addr' )  \ move past the 2 sub-routine ENTRY instructions
+    -04 ALLOT             \ erase BL @addr instruction
+    ( addr') @@ B,        \ compile a branch to the NEW sub-routine (B @addr)
 ; 
 
 DECIMAL
