@@ -119,11 +119,10 @@ HEX
 : EQU   CONSTANT ; \ alias 
 
 \ load register with immediate argument 
+\ usage:   BEEF R1 #! 
+\       02 BYTE R1 #!   \ load 02 as low bits of R1 
 : #!    ( n REG -- ) DUP ?REGISTER SWAP LI, ; \ n -> REG
 : BYTE   ( 0c --  0c00 )  ><  ; \ swap byte to other side of register 
-\ useage:   BEEF R1 LD  
-\           02 BYTE R1 LD   \ load 02 as low bits of R1 
-
 
 \ fetch 
 : @       ** ;  \ indirect addressing alias 
@@ -271,30 +270,6 @@ ASMFORTH
 \ CUT n characters from left side of STRING (addr,len)
 : /STRING ( addr len n -- addr' len' ) TOS NOS SUB,  TOS 2 (SP) +  DROP ;
 
-CR .( sub-routine creator)
-\ subs call themselves when invoked by compiling a BL instruction
-\ into the program
-: SUB:
-\ compile time action
-   CREATE  !CSP
-           R11 RPUSH,    \ compile "enter sub-routine" ( 2 instructions)
-                         \ <--- your program code compiles here
-   DOES> ( sub-addr) @@ BL, ; \ Runtime: compile BL to this sub-routine
-
-
-\ "exit sub-routine" ( 2 instructions)
-: ;SUB    ?CSP  R11 RPOP,  RT, ;
-
-: LOOKBACK ( -- u)  HERE 2- @ ; \ fetch previous instruction code
-
-\ tail call optimizing ;SUB. USE ONLY IF LAST WORD IS SUB:
-: -;SUB ( --  )
-    LOOKBACK   ( addr )   \ get entry address of sub-routine
-    2 CELLS +  ( addr' )  \ move past the sub-routine ENTRY instructions
-    -04 ALLOT             \ erase BL @addr
-    ( addr') @@ B,       \ compile a branch to the NEW sub-routine
-;
-
 : ;CODE    NEXT,  ENDCODE ; \ returns to Forth
 
 CR .( FOR/NEXT)
@@ -335,7 +310,33 @@ MACRO: CALL ( arg -- )
     R11 RPOP, 
 ;MACRO 
 
-: *MFORTHEND* ;
+CR .( sub-routine creator)
+\ subs call themselves when invoked by compiling a BL instruction
+\ into the program
+MACRO: :
+\ compile time action
+   CREATE  !CSP
+           R11 RPUSH,        \ compile "enter sub-routine" ( 2 instructions)
+                             \ <--- your program code compiles here
+   DOES> ( sub-addr) @@ BL,  \ Runtime: compile BL to this sub-routine
+;MACRO 
+
+
+\ "exit sub-routine" ( 2 instructions)
+MACRO: ;   ?CSP  R11 RPOP,  RT, ;MACRO 
+
+\ fetch previous instruction code
+MACRO: LOOKBACK ( -- u)  HERE 2- @ ;MACRO
+
+\ tail call optimizing ;SUB. USE ONLY IF LAST WORD IS SUB:
+MACRO: -; ( --  )
+    LOOKBACK   ( addr )   \ get entry address of sub-routine
+    2 CELLS +  ( addr' )  \ move past the sub-routine ENTRY instructions
+    -04 ALLOT             \ erase BL @addr
+    ( addr') @@ B,       \ compile a branch to the NEW sub-routine
+;MACRO 
+
+MACRO: *MFORTHEND* ;MACRO 
 \ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 ASMFORTH ALSO FORTH DEFINITIONS 
@@ -349,7 +350,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.72 Mar 2 2023"
+    PAGE ." ASMForth II  V0.73 Mar 2 2023"
     ASMFORTH
     ABORT ;
 

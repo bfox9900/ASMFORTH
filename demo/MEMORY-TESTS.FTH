@@ -23,15 +23,18 @@ CODE FORLOOP
 
 HEX
 CODE DOWHILE
-      X R5 LD  \ put address of X into R5 
+      X R5 #!  \ put address of X into R5 
       FFFF #   \ number onto the Forth data stack 
       BEGIN
         TOS 1- \ decrement top of data stack 
       <> WHILE \ while <> 0 
         
-        \ inc X by 2
+        \ inc X by 2 via a register 
         R5 @ 2+  \ means at the address in R5, inc by 2 
-
+        
+        \ OR do directly this way 
+        X @@ 2+  
+      
       REPEAT
       R5 TOS !  \ put result in TOS register
 ;CODE

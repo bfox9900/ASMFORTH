@@ -74,10 +74,13 @@
 
 ONLY FORTH DEFINITIONS
 VOCABULARY MFORTH
-
 VOCABULARY ASSEMBLER
+
 ONLY FORTH ALSO ASSEMBLER DEFINITIONS
 INCLUDE DSK1.ASM9900
+\ compile forth words that will Assemble code when executed
+: ;MACRO   POSTPONE ;  ;  IMMEDIATE
+: MACRO:  :  ;
 
 HERE
 
@@ -87,25 +90,6 @@ HERE
 : ASMFORTH 
   ONLY FORTH ALSO ASSEMBLER ALSO MFORTH DEFINITIONS ;
 
-\ compile forth words that will Assemble code when executed
-ALSO ASSEMBLER DEFINITIONS 
-: ;MACRO   POSTPONE ;  ;  IMMEDIATE
-: MACRO:  :  ;
-
-\ Named stack items (in memory)
-: NOS   SP  ;    \ Next on Stack
-: 3RD   2 (SP) ;
-: 4TH   4 (SP) ;
-: 5TH   6 (SP) ;
-: 6TH   8 (SP) ;
-
-\ indexed addressing register names 
-: (R0)    TRUE ABORT" R0 cannot be indexed" ; 
-: (R1)    R1 () ;   : (R2)    R2 () ;   : (R3)    R3 () ;
-: (R4)    R4 () ;   : (R5)    R5 () ;   : (R6)    R6 () ;
-: (R7)    R7 () ;   : (R8)    R8 () ;   : (R9)    R9 () ;
-: (R10)  R10 () ;   : (R11)  R11 () ;   : (R12)  R12 () ;
-: (R13)  R13 () ;   : (R14)  R14 () ;   : (R15)  R15 () ;
 
 ASMFORTH  
 DECIMAL
@@ -124,6 +108,20 @@ HEX
 \ useage:   BEEF R1 LD  
 \           02 BYTE R1 LD   \ load 02 as low bits of R1 
 
+\ Named stack items (in memory)
+: NOS   SP  ;    \ Next on Stack
+: 3RD   2 (SP) ;
+: 4TH   4 (SP) ;
+: 5TH   6 (SP) ;
+: 6TH   8 (SP) ;
+
+\ indexed addressing register names 
+: (R0)    TRUE ABORT" R0 cannot be indexed" ; 
+: (R1)    R1 () ;   : (R2)    R2 () ;   : (R3)    R3 () ;
+: (R4)    R4 () ;   : (R5)    R5 () ;   : (R6)    R6 () ;
+: (R7)    R7 () ;   : (R8)    R8 () ;   : (R9)    R9 () ;
+: (R10)  R10 () ;   : (R11)  R11 () ;   : (R12)  R12 () ;
+: (R13)  R13 () ;   : (R14)  R14 () ;   : (R15)  R15 () ;
 
 \ fetch 
 : @       ** ;  \ indirect addressing alias 
@@ -271,30 +269,6 @@ ASMFORTH
 \ CUT n characters from left side of STRING (addr,len)
 : /STRING ( addr len n -- addr' len' ) TOS NOS SUB,  TOS 2 (SP) +  DROP ;
 
-CR .( sub-routine creator)
-\ subs call themselves when invoked by compiling a BL instruction
-\ into the program
-: SUB:
-\ compile time action
-   CREATE  !CSP
-           R11 RPUSH,    \ compile "enter sub-routine" ( 2 instructions)
-                         \ <--- your program code compiles here
-   DOES> ( sub-addr) @@ BL, ; \ Runtime: compile BL to this sub-routine
-
-
-\ "exit sub-routine" ( 2 instructions)
-: ;SUB    ?CSP  R11 RPOP,  RT, ;
-
-: LOOKBACK ( -- u)  HERE 2- @ ; \ fetch previous instruction code
-
-\ tail call optimizing ;SUB. USE ONLY IF LAST WORD IS SUB:
-: -;SUB ( --  )
-    LOOKBACK   ( addr )   \ get entry address of sub-routine
-    2 CELLS +  ( addr' )  \ move past the sub-routine ENTRY instructions
-    -04 ALLOT             \ erase BL @addr
-    ( addr') @@ B,       \ compile a branch to the NEW sub-routine
-;
-
 : ;CODE    NEXT,  ENDCODE ; \ returns to Forth
 
 CR .( FOR/NEXT)
@@ -335,10 +309,37 @@ MACRO: CALL ( arg -- )
     R11 RPOP, 
 ;MACRO 
 
-: *MFORTHEND* ;
+
+CR .( COLON/SEMI-COLON sub-routine creator for ASMFORTH ) 
+\ subs call themselves when invoked by compiling a BL instruction
+\ into the program
+\ "exit sub-routine" ( 2 instructions)
+MACRO: ;   ?CSP  R11 RPOP,  RT, ;MACRO 
+
+MACRO: :
+\ compile time action
+   CREATE  !CSP
+           R11 RPUSH,    \ compile "enter sub-routine" ( 2 instructions)
+                         \ <--- your program code compiles here
+   DOES> ( sub-addr) @@ BL,  \ Runtime: compile BL to this sub-routine
+;MACRO 
+
+MACRO: LOOKBACK ( -- u)  HERE 2- @ ;MACRO  \ fetch previous instruction code
+
+\ tail call optimizing semi-colon. 
+\ *USE ONLY IF LAST WORD IS a colon sub-routine*
+MACRO: -; ( -- )
+    LOOKBACK   ( addr )   \ get entry address of sub-routine
+    2 CELLS +  ( addr' )  \ move past the R11 PUSH instruction
+    -04 ALLOT             \ erase  <addr> @@ BL  instruction 
+    ( addr') @@ B,        \ compile a branch to the NEW sub-routine
+;MACRO
+
 \ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 ASMFORTH ALSO FORTH DEFINITIONS 
+: *MFORTHEND* ;
+
 : NEW.  \ erases the MFORTH definitions AFTER '*MFORTHEND*'
     ['] *MFORTHEND* CFA>NFA  ['] MFORTH >BODY ! ;
 
@@ -349,7 +350,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.72 Mar 2 2023"
+    PAGE ." ASMForth II  V0.8 Mar 2 2023"
     ASMFORTH
     ABORT ;
 
