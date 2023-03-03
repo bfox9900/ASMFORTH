@@ -104,6 +104,28 @@ uses more instructions needlessly. The double-fetch @@ lets us use this feature.
     X @@ R1 !       \ fetch value from X and store in R1  ie: MOV @X,R1 
     Y @@ X @@ !     \ move contents of Y into X (memory to memory)
 ```
+#### Math Operations
+The advantage of simply embracing the native machine is that we can use
+operations on registers as in Assembler but we are also free to use the 
+DATA stack with the caveat that we use the TOS and NOS registers.
+
+Example:
+    45 #  7 #    \ push 2 numbers onto the DATA stack. NOS=45 TOS=7 
+    NOS+ TOS +   \ TOS=52  NOS is removed from stack memory 
+
+These Forth operations are also available in ASMForth.
+The code is simple to understand 
+```
+: DUP   ( n -- n n) TOS PUSH, ;
+: DROP  ( n -- )    TOS POP,  ;
+: NIP   ( n1 n2 -- n2) SP 2+ ;
+: OVER  ( n1 n2 -- n1 n2 n1)  DUP  3RD TOS ! ;
+: 2DROP ( n n --)   DROP DROP ;
+```
+
+
+
+
 
 
 #### Many 9900 instructions are one-to-one with ANS Forth
@@ -119,7 +141,7 @@ The difference from conventional Forth is that in ASMForth II we must provide
 the Register names.
 
     HEX
-    01 R0 LD   \ load R0 with 1 
+    01 R0 #!   \ load R0 with 1 using load immediate instruction 
     R5 R0 XOR  
 
 If we choose to use the DATA stack it would look like this:
