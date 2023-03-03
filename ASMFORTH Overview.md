@@ -109,9 +109,11 @@ The advantage of simply embracing the native machine is that we can use
 operations on registers as in Assembler but we are also free to use the 
 DATA stack with the caveat that we use the TOS and NOS registers.
 
-Example:
+Addition Example:
+```
     45 #  7 #    \ push 2 numbers onto the DATA stack. NOS=45 TOS=7 
     NOS+ TOS +   \ TOS=52  NOS is removed from stack memory 
+```
 
 These Forth operations are also available in ASMForth.
 The code is simple to understand 
