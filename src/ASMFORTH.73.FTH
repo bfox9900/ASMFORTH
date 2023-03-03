@@ -94,14 +94,14 @@ ALSO ASSEMBLER DEFINITIONS
 
 \ Named stack items (in memory)
 : NOS   *SP  ;    \ Next on Stack
-: NOS+  *SP+ ;    \ Can be used instead of POP. 
+: NOS+  *SP+ ;    \ Can be used instead of POP: NOS+ TOS ! 
 : 3RD   2 (SP) ;
 : 4TH   4 (SP) ;
 : 5TH   6 (SP) ;
 : 6TH   8 (SP) ;
 
 \ indexed addressing register names 
-: (R0)    TRUE ABORT" R0 cannot be indexed" ; 
+: (R0)    TRUE ABORT" R0 cannot index" ; 
 : (R1)    R1 () ;   : (R2)    R2 () ;   : (R3)    R3 () ;
 : (R4)    R4 () ;   : (R5)    R5 () ;   : (R6)    R6 () ;
 : (R7)    R7 () ;   : (R8)    R8 () ;   : (R9)    R9 () ;
@@ -262,8 +262,8 @@ ASMFORTH
 : REPEAT ( *while *begin -- ) AGAIN, ENDIF, ;
 
 \ ********* ANS/ISO Forth, Stack operators ****************
-: DUP   ( n -- n n) TOS PUSH, ;
-: DROP  ( n -- )    TOS POP,  ;
+: DUP   ( n -- n n) TOS PUSH ;
+: DROP  ( n -- )    TOS POP  ;
 : NIP   ( n1 n2 -- n2) SP 2+ ;
 : OVER  ( n1 n2 -- n1 n2 n1)  DUP  3RD TOS ! ;
 : 2DROP ( n n --)   DROP DROP ;
@@ -352,7 +352,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.73 Mar 2 2023"
+    PAGE ." ASMForth II  V0.73 Mar 3 2023"
     ASMFORTH
     ABORT ;
 
