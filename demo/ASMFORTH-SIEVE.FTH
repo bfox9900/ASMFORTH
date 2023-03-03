@@ -8,14 +8,13 @@
 \ * 10 iterations 6.4 seconds on 16-bit console
 \ * ~10 seconds on stock console
 
+\ * ASMForth version runs in 10 seconds 
 HOST 
-DECIMAL 
-8190 CONSTANT SIZE
-HEX 
-2000 CONSTANT FLAGS   \ array in Low RAM 
+DECIMAL 8190 CONSTANT SIZE
+HEX     2000 CONSTANT FLAGS   \ array in Low RAM 
 
 ASMFORTH 
-SUB: FILLW ( addr size char --) \ nestable sub-routine 
+: FILLW ( addr size char --) \ nestable sub-routine 
     R0 POP            \ size 
     R1 POP            \ base of array
     BEGIN
@@ -23,9 +22,7 @@ SUB: FILLW ( addr size char --) \ nestable sub-routine
         R0 2-
     NC UNTIL  
     DROP 
-;SUB 
-
-
+; 
 
 HEX
 CODE DO-PRIME ( -- n)  
@@ -50,12 +47,13 @@ CODE DO-PRIME ( -- n)
             R3 FLAGS (R2) C! \ reset byte FLAGS(R2)
             R1 R2 +     \ PRIME K +! 
           REPEAT 
-          TOS 1+         \ increment count of primes
+          TOS 1+        \ increment count of primes
     THEN 
-    R0 1+                \ bump index register
+    R0 1+               \ bump index register
   NEXT 
 ;CODE  
 
+HOST   ( Switch back to Host Forth )
 DECIMAL 
 : PRIMES ( -- )
    PAGE ."  10 Iterations"
