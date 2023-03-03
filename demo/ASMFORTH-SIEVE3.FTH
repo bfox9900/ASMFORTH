@@ -53,7 +53,7 @@ DECIMAL
    10 0 DO  
    [ HEX ]
         FLAGS SIZE  0101 FILLW 
-  [ DECIMAL ]
+   [ DECIMAL ]
         DO-PRIME  CR . ." primes"  
     LOOP
    CR ." Done!"

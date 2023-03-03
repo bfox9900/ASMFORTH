@@ -27,12 +27,12 @@ ASMFORTH
 : PRIME-MOVER 
   FLAGS # SIZE # 0101 # FILLW
 \ inits 
-   R0 OFF        \ clear loop index 
-   R3 OFF        \ 0 constant
-   FLAGS R5 #!   \ array base address 
-   0 #           \ counter on top of Forth stack 
+  R0 OFF        \ clear loop index 
+  R3 OFF        \ 0 constant
+  FLAGS R5 #!   \ array base address 
+  0 #           \ counter on top of Forth stack 
 
-   SIZE # FOR 
+  SIZE # FOR 
     R5 @+ R3 CMPB       \ FLAGS C@+ byte-compared to R3 (ie: 0)
     <> IF               \ not equal to zero ? 
           R0 R1 !       \ I -> R1
