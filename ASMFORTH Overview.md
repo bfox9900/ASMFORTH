@@ -40,15 +40,17 @@ In fact:
 #### *ALL Registers must be explicitly reference in ASMFORTH*
 
 This is the same as conventional Forth Assemblers. 
-ASMFORTH is something more akin to using Forth with local variables where the local variables are actually machine registers.  Since we need to reserve some registers for the Forth architecure and the 9900 CPU has R11 and R12 reserved for special purposes we are left with ten free registers. One of those ten is the top of data stack cache register which
-provides extra space "underneath" it in the data stack. 
+ASMFORTH is something more akin to using Forth with local variables where the local variables are actually machine registers.  Since we need to reserve some registers for the Forth architecure and the 9900 CPU has R11 and R12 reserved for special purposes we are left with *ten free registers. One of those ten is the top of data stack cache register which provides extra space "underneath" it in the data stack. 
+
+* R13 R14 R15 are free unless you use MTASK99 multi-tasker
 
 ## Examples
 
 ### Named Registers
 Registers are re-named to mimic a Forth CPU with TOS (top of stack) and NOS (next on stack)
 being the Registers used for DATA stack operations. 
-: TOS   R4   ;    \ cache for the top of stack item
+
+: TOS    R4  ;    \ cache for the top of stack item
 : NOS   *SP  ;    \ Next on Stack
 : NOS+  *SP+ ;    \ Can be used instead of POP: NOS+ TOS ! 
 
