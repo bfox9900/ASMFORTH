@@ -1,6 +1,6 @@
 # ASMFORTH
  
- This is an experimental Machine Forth for the TI-99. It uses Forth-like syntax but is really an Assembler. Many of the words are just aliases of the Forth assembler in Camel99 Forth. Although the syntax looks like Forth the significant difference is that registers are reference explicity for maximum performance.  The data stack and return stack are still available to the programmer however.
+ This is an experimental Machine Forth for the TI-99. It uses Forth-like syntax but is really an Assembler. Many of the words are just aliases of the Forth assembler in Camel99 Forth. Although the syntax looks like Forth the significant difference is that registers are referenced explicity for maximum performance.  The data stack and return stack are still available to the programmer however.
 
 
 This Assembler was created when comparing the performance on the Byte Magazine
