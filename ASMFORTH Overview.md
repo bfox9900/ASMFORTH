@@ -55,17 +55,18 @@ those ten is the top of data stack cache register which provides extra space
 ### Named Registers
 Registers are re-named to mimic a Forth CPU with TOS (top of stack) and NOS (next on stack)
 being the Registers used for DATA stack operations. Their Forth definition is shown.
-
+```
 : TOS    R4  ;    \ cache for the top of stack item
 : NOS   *SP  ;    \ Next on Stack
 : NOS^  *SP+ ;    \ Use NOS^ and pop itself 
-
+```
 ### Deeper Into the DATA Stack 
+```
 : 3RD   2 (SP) ;
 : 4TH   4 (SP) ;
 : 5TH   6 (SP) ;
 : 6TH   8 (SP) ;
-
+```
 The deeper registers would not typically be needed because we can used hardware registers like
 local variables, but they are easily accessed by the 9900 architecture. 
 You might want to grab one and put into a register without destroying it like this 
