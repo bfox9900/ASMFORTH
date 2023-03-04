@@ -330,21 +330,29 @@ For more detail look at the source code for ASMFORTH.
 
 ### Tail Call Optimization
 Something that Charles Moore added to machine Forth was tail-call Optimization.
-This can be used if a sub-routine calls another sub-routine as the last function in the code.  What tail-call optimiziation does is replace the branch and link instruction with simple branch and enters that sub-routine without pushing R11 onto the return stack.  This speeds up the call and the return stack does not grow larger. Less return stack usage can be very important if you write a recursive sub-routine in Assembler. 
+This can be used if a sub-routine calls another sub-routine as the last 
+function in the code.  What tail-call optimiziation does is replace the branch
+and link instruction with simple branch and enters that sub-routine without 
+pushing R11 onto the return stack.  This speeds up the call and the return 
+stack does not grow larger. Less return stack usage can be very important if
+you write a recursive sub-routine in Assembler. 
 
-For example in the code above, since NEST-CALLS is calling FILLW as the last line we could re-write it like this:
+For example in the code above, since NESTED-CALLS is calling FILLW as the last
+line we could re-write it like this:
 
 ```
     HEX 
-    SUB: NESTED-CALLS
+    : NESTED-CALLS
        2000 #  1000 #  0000 # FILLW
        E000 #  1000 #  BEEF # FILLW 
-    -;SUB 
+    -; 
 ```
-Notice the use of -;SUB at the end.
-This is the command that invokes tail-call optimization.
+Notice the use of -;SUB at the end. This is the command that invokes tail-call 
+optimization.
 
-**WARNING** If you use -;SUB with a CPU instruction primitive line + or !, as the last line, the code will crash. 
+**WARNING** 
+If you use -; with a CPU instruction primitive line + or !, as the last line, 
+the code will crash. 
 
 
  ## Some Assembly Required   
