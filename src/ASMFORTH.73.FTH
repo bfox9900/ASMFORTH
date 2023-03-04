@@ -94,7 +94,7 @@ ALSO ASSEMBLER DEFINITIONS
 
 \ Named stack items (in memory)
 : NOS   *SP  ;    \ Next on Stack register
-: NOS^  *SP+ ;    \ Use NOS and the pop it 
+: NOS^  *SP+ ;    \ Use NOS and then pop it 
 : 3RD   2 (SP) ;
 : 4TH   4 (SP) ;
 : 5TH   6 (SP) ;
