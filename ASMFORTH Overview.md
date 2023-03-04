@@ -171,9 +171,9 @@ If we choose to use the DATA stack it would look like this:
 Conventional Forth words IF, THEN, BEGIN, UNTIL etc. are used in ASMFORTH with
 an important difference. The CPU status register is used by default on 
 conditional branches like IF WHILE or UNTIL.  This means that if you decrement 
-a register with 1-, perform another operation, the status register will contain
-bits that signal the result of the operation. Word like IF respond to the status
-bits with the following comparison tokens: 
+a register with 1-, or perform any other operation, the status register will 
+contain bits that signal the result of the operation. Word like IF WHILE and 
+UNTIL respond to the status bits with the following comparison tokens: 
 
 -  =      equal 
 -  <>     not equal 
@@ -184,8 +184,13 @@ bits with the following comparison tokens:
 -  U<     unsigned 
 -  U<=    unsigned 
 
-NOTE: Operators like '='  '<>' etc, are CPU specific here and test the EQ flag
-      in the status register. 
+Behind the scenes the branching and looping words are actually "compilers"
+that compile the correct "JMP" instruction into your code based on the 
+token you gave it. 
+
+*NOTE:*
+Operators like '='  '<>' are CPU specific here and test the EQ flag
+in the status register. 
 
 #### Register Comparisons
 To explicitly compare two registers we must use the compare instructions. 
