@@ -49,26 +49,34 @@ those ten is the top of data stack cache register which provides extra space
 
 * R13 R14 R15 are free unless you use the MTASK99 multi-tasker
 
-## Examples
+
+## Quick ASMForth Reference
 
 ### Named Registers
 Registers are re-named to mimic a Forth CPU with TOS (top of stack) and NOS (next on stack)
-being the Registers used for DATA stack operations. 
+being the Registers used for DATA stack operations. Their Forth definition is shown.
 
 : TOS    R4  ;    \ cache for the top of stack item
 : NOS   *SP  ;    \ Next on Stack
-: NOS^  *SP+ ;    \ NOS^ removes pops itself automatically
+: NOS^  *SP+ ;    \ Use NOS^ and pop itself 
 
-These would not typically be needed because we can used hardware registers like
-local variables, but they are easily accessed by the 9900 architecture. 
-DO NOT use '@'  with these stack items.
-
+### Deeper Into the DATA Stack 
 : 3RD   2 (SP) ;
 : 4TH   4 (SP) ;
 : 5TH   6 (SP) ;
 : 6TH   8 (SP) ;
 
-## Quick ASMForth Reference
+The deeper registers would not typically be needed because we can used hardware registers like
+local variables, but they are easily accessed by the 9900 architecture. 
+You might want to grab one and put into a register without destroying it like this 
+
+```
+    5TH R0 !
+    3RD R1 ! 
+```    
+
+You CANNOT use '@'  or @+ with these stack items.
+
 
 ### Forth/9900 Memory Instruction Mapping
 
