@@ -347,8 +347,8 @@ line we could re-write it like this:
        E000 #  1000 #  BEEF # FILLW 
     -; 
 ```
-Notice the use of -;SUB at the end. This is the command that invokes tail-call 
-optimization.
+Notice the use of -; at the end. 
+This is the command that invokes tail-call optimization.
 
 **WARNING** 
 If you use -; with a CPU instruction primitive line + or !, as the last line, 
