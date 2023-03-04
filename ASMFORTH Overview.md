@@ -37,12 +37,17 @@ ability to use the 9900 register system directly.
 
 In fact:
 
-#### *ALL Registers must be explicitly reference in ASMFORTH*
+#### *Registers must be explicitly reference in ASMFORTH*
 
 This is the same as conventional Forth Assemblers. 
-ASMFORTH is something more akin to using Forth with local variables where the local variables are actually machine registers.  Since we need to reserve some registers for the Forth architecure and the 9900 CPU has R11 and R12 reserved for special purposes we are left with *ten free registers. One of those ten is the top of data stack cache register which provides extra space "underneath" it in the data stack. 
+ASMFORTH is something more akin to using Forth with local variables where the
+local variables are actually machine registers.  Since we need to reserve 
+some registers for the Forth architecure and the 9900 CPU has R11 and R12 
+reserved for special purposes we are left with *ten free registers. One of 
+those ten is the top of data stack cache register which provides extra space 
+"underneath" it in the data stack. 
 
-* R13 R14 R15 are free unless you use MTASK99 multi-tasker
+* R13 R14 R15 are free unless you use the MTASK99 multi-tasker
 
 ## Examples
 
@@ -56,14 +61,17 @@ being the Registers used for DATA stack operations.
 
 These would not typically be needed because we can used hardware registers like
 local variables, but they are easily accessed by the 9900 architecture. 
+DO NOT use '@'  with these stack items.
 
 : 3RD   2 (SP) ;
 : 4TH   4 (SP) ;
 : 5TH   6 (SP) ;
 : 6TH   8 (SP) ;
 
+## Quick ASMForth Reference
 
 ### Forth/9900 Memory Instruction Mapping
+
     Name    ASMForth       9900 
     -----   --------       -----
     Store    !              MOV 
@@ -75,7 +83,7 @@ local variables, but they are easily accessed by the 9900 architecture.
 #### Store contents of a register in another register
     R3 R5 !  
 
-#### Fetch from the Address in a Register to a Register 
+#### Fetch from the Address in a Register, store in a Register 
     RO @ R5 !    \ get contents of address in R0 and store in R5 
 
 #### Fetch from the Address in a Register with auto-increment    
@@ -283,18 +291,22 @@ You can also use indirect-addressing auto-incremented. Here some examples.
 ```
 
 ## Sub-Routines
-ASMFORTH provides a SUB: directive that lets you make a native sub-routine
-that calls itself and can be nested inside other sub-routines.
+ASMFORTH provides a : directive that lets you make a native subroutine
+in that same way you would do it in Forth. These subroutines can be nested
+inside other subroutines. 
 
-SUB: pushes the linkage register R11 onto the return stack and the does 
-BRANCH and LINK to itself.  
+* SUBROUTINES must be used from inside a CODE word or another subroutine. 
 
-;SUB  Pops R11 off the return stack to complete the sub-routine.
+ASMForth : compiles code to push linkage register R11 onto the return 
+stack and then compiles a BRANCH and LINK to itself.  
 
+ASMForth ; compiles code to pop R11 off the return stack and then compiles
+the RT psuedo instruction.
 For more detail look at the source code for ASMFORTH.
 
+### Subroutine Example 
 ```
-    SUB: FILLW ( addr size char --) \ nestable sub-routine 
+    : FILLW ( addr size char --) \ nestable sub-routine 
         R0 POP            \ size 
         R1 POP            \ base of array
         BEGIN
@@ -302,13 +314,13 @@ For more detail look at the source code for ASMFORTH.
           R0 2-
         NC UNTIL  
         DROP 
-    ;SUB 
+    ; 
 
     HEX 
-    SUB: NESTED-CALLS
+    : NESTED-CALLS
        2000 #  1000 #  0000 # FILLW
        E000 #  1000 #  BEEF # FILLW 
-    ;SUB 
+    ; 
 ```
 ### Tail Call Optimization
 Something that Charles Moore added to machine Forth was tail-call Optimization.
