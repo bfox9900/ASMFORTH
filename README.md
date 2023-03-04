@@ -17,7 +17,7 @@ See the demo folder for an example of the sieve benchmark in Camel99 Forth and i
 - Used like a Forth Assembler but with Forth-like syntax
 - Seamless integration with the Camel99 Forth environment 
 - Up to 12X speed-up over threaded Forth
-- Nestable sub-routines with the SUB: ;SUB pair 
+- Nestable sub-routines created with ASMForth versions of : and ; 
 - Tail-call optimization 
-   - In the spirit of Moore's machine Forth this is invoked using -;SUB 
+   - In the spirit of Moore's machine Forth this is manually invoked using -;
 
