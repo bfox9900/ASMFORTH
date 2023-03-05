@@ -77,7 +77,7 @@ VOCABULARY MFORTH
 
 VOCABULARY ASSEMBLER
 ONLY FORTH ALSO ASSEMBLER DEFINITIONS
-INCLUDE DSK1.ASM9900
+INCLUDE DSK7.ASM9900
 
 HERE
 
@@ -99,14 +99,6 @@ ALSO ASSEMBLER DEFINITIONS
 : 4TH   4 (SP) ;
 : 5TH   6 (SP) ;
 : 6TH   8 (SP) ;
-
-\ indexed addressing register names 
-: (R0)    TRUE ABORT" R0 cannot index" ; 
-: (R1)    R1 () ;   : (R2)    R2 () ;   : (R3)    R3 () ;
-: (R4)    R4 () ;   : (R5)    R5 () ;   : (R6)    R6 () ;
-: (R7)    R7 () ;   : (R8)    R8 () ;   : (R9)    R9 () ;
-: (R10)  R10 () ;   : (R11)  R11 () ;   : (R12)  R12 () ;
-: (R13)  R13 () ;   : (R14)  R14 () ;   : (R15)  R15 () ;
 
 ASMFORTH  
 \ fetch previous instruction code
@@ -295,32 +287,6 @@ CR .( FOR/NEXT)
 : NEXT  ( -- )   RP @ 1-   NC UNTIL, RDROP ;
 : NEXT2          RP @ 2-   NC UNTIL, RDROP ; 
 
-\ Hi-level Forth examples 
-MACRO: COUNT  ( Caddr -- addr len )
-    DUP
-    NOS INC,
-    *TOS TOS MOVB,
-    TOS 8 SRL, 
-;MACRO 
-
-ASMFORTH 
-MACRO: * ( n n -- n') \ multiply operator
-    NOS @+ R3 MOV,
-    TOS R3 MPY,
-;MACRO
-
-MACRO: UM* ( n n -- d) \ unsigned mixed multiply  
-    NOS TOS MPY, 
-    R5  NOS MOV, 
-;MACRO 
-
-MACRO: CALL ( arg -- ) 
-\ Use @ for call thru register 
-\ Use @@ for call to an address 
-    R11 RPUSH, 
-    BL, 
-    R11 RPOP, 
-;MACRO 
 
 CR .( sub-routine creator)
 \ subs call themselves when invoked by compiling a BL instruction
@@ -336,6 +302,76 @@ MACRO: :
 
 \ "exit sub-routine" ( 2 instructions)
 MACRO: ;   ?CSP  R11 RPOP,  RT, ;MACRO 
+
+\ -----------------------------------------------
+\ Hi-level Forth word macros 
+ASMFORTH 
+MACRO: COUNT  ( Caddr -- addr len )
+    DUP
+    NOS 1+
+    *TOS TOS C!
+    TOS 8 RSHIFT 
+;MACRO 
+
+MACRO: * ( n n -- n') \ multiply operator
+    NOS @+ R3 !
+    TOS R3 MPY,
+;MACRO
+
+MACRO: UM* ( n n -- d) \ unsigned mixed multiply  
+    NOS TOS MPY, 
+    R5  NOS ! 
+;MACRO 
+
+MACRO: * (  n n -- n)
+    NOS^ R3 !    
+    TOS  R3 MPY,     \ cool trick ! result goes to R4
+;MACRO 
+
+MACRO: UM/MOD ( d n -- n n)
+    TOS  R0  !   
+    NOS^ TOS !
+    NOS  R5  !     
+    R0   TOS DIV, 
+    R5   NOS !    
+;MACRO 
+
+MACRO: U*/ ( n n n -- n )
+    TOS  R0 !     \ move TOS cache register R0 (divisor)
+    NOS^ R1 !     \ POP multiplier to R1
+    NOS^ TOS !    \ multiplicand -> TOS
+    R1  MPY,      \ 32 bit multiply
+    R5  R3 !      \ low order word to R3
+    R0  TOS DIV,   \ unsigned division
+;MACRO 
+
+MACRO: U/ ( n n -- n ) \ unsigned divide. FAST but be careful
+    TOS  R0 MOV,     \ divisor->R0    
+        TOS CLR,
+   *SP+  R5 MOV,     \ MOVE low word to r5 
+    R0  TOS DIV,     \ perform unsigned division 
+;MACRO 
+
+
+MACRO: CALL ( arg -- ) 
+\ Use @ for call thru register 
+\ Use @@ for call to an address 
+    R11 RPUSH, 
+    BL, 
+    R11 RPOP, 
+;MACRO 
+
+CODE MIN    ( n1 n2 -- n)
+            *SP TOS CMP,    \ compare n1 & n2
+            @@1 JLT,       \ if n1 < n2 goto @@1:
+            SP INCT,       \ otherwise NIP n1
+            NEXT,
++CODE MAX   ( n1 n2 -- n)
+            *SP  TOS CMP,   \ compare n1 & n2
+            @@2 JGT,       \ if n1 > n2 goto @@1:
+            SP INCT,       \ otherwise NIP n1
+            NEXT,
+@@1: @@2:   TOS POP,       \ DROP n1, refill TOS
 
 
 MACRO: *MFORTHEND* ;MACRO 
