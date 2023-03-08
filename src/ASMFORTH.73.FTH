@@ -135,7 +135,7 @@ HEX
 
 \ store  
 : !    ( src dst -- ) MOV, ; 
-: +!   ( src Addr --) @@ + ;
+: +!  ( src mem -- ) ?ADDR  @@ + ; 
 : C!   ( c  ARG -- )  MOVB, ;
 
 \ push/pop  any register 
@@ -186,9 +186,6 @@ CR .( Forth Intrinics)
 : 8*                 3 LSHIFT ;
 : 2/     ( n -- n)   1 RSHIFT ;
 
-\ Not really needed but Forth consistent
-: +!  ( src mem -- ) ?ADDR  @@ + ; 
-
 : RDROP ( -- )  RP 2+ ;
 
 : NOP    ( -- )     0 JMP, ;
@@ -199,13 +196,6 @@ CR .( Forth Intrinics)
 : OFF    ( arg --)   CLR, ;
 : ><     ( arg -- )  SWPB, ;
 
-\ STACK SPECIFIC operators 
-
-: ALIGNED ( n -- n)  TOS INC,  TOS -2 #AND ;
-: AND   ( w w -- w ) NOS INV,  NOS @+ TOS SZC, ;
-: 2@    ( addr -- d) 2 (TOS) PUSH,  *TOS TOS MOV, ; \ fetch double integer
-
-
 CR .( ASSEMBLER jump tokens)
 HEX                  
                       \ Action if TRUE
@@ -215,23 +205,12 @@ HEX
 \ 04 CONSTANT LO      \ JHE to ENDIF,
 \ 05 CONSTANT LTE     \ JGT to ENDIF, *signed
 \ 06 CONSTANT EQ      \ JNE to ENDIF,
-
 \ 07 CONSTANT OC      \ JNC to ENDIF,  ON carry. Use as is 
 \ 08 CONSTANT NC      \ JOC to ENDIF,  No carry. Use as is
 \ 09 CONSTANT OO      \ JNO to ENDIF,  On overflow. Use as is
-
 \ 0A CONSTANT HE      \ JLO to ENDIF,
 \ 0B CONSTANT LE      \ JH  to ENDIF,
-
 \ 0C CONSTANT NP      \ JOP to ENDIF,  No parity. Use as is
-
-: NOT    ( -- )  R1 STST,  R1 2000 ANDI, ;  \ invert EQ flag in status arg.
-
-\ 2 item stack comparisons. USE CMP or CMPB as required 
-: CMP   ( reg reg) CMP, ;
-: CMPB  ( reg reg) CMPB, ;
-: #CMP  ( reg lit) CI, ;  \ compare immediate needs a preceding literal 
-
 
 \ ASMFORTH aliases for jump tokens 
 : =      EQ ;
@@ -243,7 +222,14 @@ HEX
 : U<     HI ;
 : U<=    LE ;
 
-\ CR .( branching and looping) \ Now in ASM9900II 
+: NOT    ( -- )  R1 STST,  R1 2000 ANDI, ;  \ invert EQ flag in status arg.
+
+\ 2 item stack comparisons. USE CMP or CMPB as required 
+: CMP   ( reg reg) CMP, ;
+: CMPB  ( reg reg) CMPB, ;
+: #CMP  ( reg lit) CI, ;  \ compare immediate needs a preceding literal 
+
+\ CR .( branching and looping) \ ** Now in ASM9900II 
 \ ASMFORTH 
 \ : IF     ( addr token -- 'jmp') IF, ;
 \ : THEN   ( 'jmp addr --)  ENDIF, ;
@@ -264,17 +250,16 @@ HEX
 
 \ ASMFORTH SWAP does not use another register. It uses Rstack.
 : SWAP  ( n1 n2 -- n2 n1) DUP>R  NOS TOS !   RP @+  NOS ! ; 
+\  ****  ANS FORTH WORDS USE THE DATA STACK ****
+: ALIGNED ( n -- n)  TOS INC,  TOS -2 #AND ;
+: AND     ( w w -- w ) NOS INV,  NOS^ TOS SZC, ;
+: 2@      ( addr -- d) 3RD PUSH,  TOS @ TOS ! ; \ fetch double integer
+: 2!      ( d addr -- ) NOS^ *TOS !  NOS^ 3RD !  DROP ;
 
-\ ..................................................................
 
 \      ////////////////////////////////////////////////////////
 \      --------------  higher level constructs  --------------
 \      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-: BOUNDS ( adr len -- adr2 adr1) NOS R1 MOV,  TOS NOS ADD,  R1 TOS MOV, ;
-: ?TERMINAL ( -- ?) 0020 @@ BL,  NOT ;
-
-\ CUT n characters from left side of STRING (addr,len)
-: /STRING ( addr len n -- addr' len' ) TOS NOS SUB,  TOS 2 (SP) +  DROP ;
 
 : ;CODE    NEXT,  ENDCODE ; \ returns to Forth
 
@@ -315,11 +300,21 @@ MACRO: COUNT  ( Caddr -- addr len )
     TOS 8 RSHIFT 
 ;MACRO 
 
-MACRO /STRING ( addr len n -- addr' len')
-    TOS NOS SUB,    
-    TOS 3RD ADD,    
-    TOS POP,           
+MACRO: BOUNDS ( adr len -- adr2 adr1) 
+    NOS R1 !  
+    TOS NOS +  
+    R1 TOS ! 
 ;MACRO 
+
+MACRO: ?TERMINAL ( -- ?) 
+    0020 @@ BL,  NOT 
+;MACRO
+
+MACRO: /STRING ( addr len n -- addr' len' ) 
+    TOS NOS -  
+    TOS 3RD +  
+    DROP 
+;MACRO
 
 MACRO: * ( n n -- n') \ multiply operator
     NOS^ R3 !
@@ -382,7 +377,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.73 Mar 3 2023"
+    PAGE ." ASMForth II  V0.73 Mar 5 2023"
     ASMFORTH
     ABORT ;
 
