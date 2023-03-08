@@ -78,7 +78,6 @@ VOCABULARY MFORTH
 VOCABULARY ASSEMBLER
 ONLY FORTH ALSO ASSEMBLER DEFINITIONS
 INCLUDE DSK7.ASM9900II
-INCLUDE DSK1.ASMLABELS 
 
 HERE
 
@@ -218,8 +217,8 @@ HEX
 : <      LTE ;
 : >      GTE ;
 : U>     LO ;
-: U>=    HE ;
 : U<     HI ;
+: U>=    HE ;
 : U<=    LE ;
 
 : NOT    ( -- )  R1 STST,  R1 2000 ANDI, ;  \ invert EQ flag in status arg.
