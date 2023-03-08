@@ -134,8 +134,18 @@ HEX
 
 \ store  
 : !    ( src dst -- ) MOV, ; 
-: +!  ( src mem -- ) ?ADDR  @@ + ; 
-: C!   ( c  ARG -- )  MOVB, ;
+: +!   ( src mem -- ) ?ADDR  @@ + ; 
+
+\ C! needs some smarts to act like Forth 
+: C!   ( c  ARG -- )  
+    DUP REG? 
+    IF  DUP>R     \ save copy of ARG
+        MOVB,     \ compile instruction 
+        R> SWPB,  \ perform swap byte on that register 
+    ELSE 
+        MOVB,
+    THEN 
+;
 
 \ push/pop  any register 
 : PUSH   PUSH, ;
@@ -381,7 +391,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.73 Mar 5 2023"
+    PAGE ." ASMForth II  V0.73 Mar 8 2023"
     ASMFORTH
     ABORT ;
 
