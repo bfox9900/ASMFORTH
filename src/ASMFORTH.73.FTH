@@ -247,6 +247,11 @@ HEX
 : OVER  ( n1 n2 -- n1 n2 n1)  DUP  3RD TOS ! ;
 : 2DROP ( n n --)   DROP DROP ;
 
+: 2DUP  ( a b -- a b a b ) 
+    SP -4 #+      \  make room for 2 cells
+    4TH NOS !      
+    TOS 3RD ! ;
+
 \ ASMFORTH SWAP does not use another register. It uses Rstack.
 : SWAP  ( n1 n2 -- n2 n1) DUP>R  NOS TOS !   RP @+  NOS ! ; 
 \  ****  ANS FORTH WORDS USE THE DATA STACK ****
