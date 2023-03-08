@@ -123,15 +123,15 @@ CR .( Simplified branching and looping)
 : RESOLVE ( 'jmp offset --)  2- 2/ SWAP 1+ C! ; \ compile offset into 'jmp'
 : <<BACK   ( addr addr' -- ) TUCK -  RESOLVE ;
  
-: IF     ( addr token -- 'jmp') HERE SWAP AJUMP, ;
-: THEN   ( 'jmp addr --)  HERE OVER -  RESOLVE ;
-: ELSE   ( -- addr ) HERE 0 JMP, SWAP THEN ;
+: IF,     ( addr token -- 'jmp') HERE SWAP AJUMP, ;
+: THEN,   ( 'jmp addr --)  HERE OVER -  RESOLVE ;
+: ELSE,   ( -- addr ) HERE 0 JMP, SWAP THEN, ;
  
-: BEGIN  ( -- addr) HERE ;
-: WHILE  ( token -- *while *begin) IF SWAP ;
-: AGAIN  ( *begin --)  HERE  0 JMP, <<BACK ;
-: UNTIL  ( *begin token --) HERE SWAP AJUMP, <<BACK ;
-: REPEAT ( *while *begin -- ) AGAIN THEN ;
+: BEGIN,  ( -- addr) HERE ;
+: WHILE,  ( token -- *while *begin) IF, SWAP ;
+: AGAIN,  ( *begin --)  HERE  0 JMP, <<BACK ;
+: UNTIL,  ( *begin token --) HERE SWAP AJUMP, <<BACK ;
+: REPEAT, ( *while *begin -- ) AGAIN, THEN, ;
  
 \ ============================================================
 CR .( CAMEL99 Forth customization)

@@ -89,17 +89,30 @@ HERE
 
 \ compile forth words that will Assemble code when executed
 ALSO ASSEMBLER DEFINITIONS 
+
 : ;MACRO   POSTPONE ;  ;  IMMEDIATE
 : MACRO:  :  ;
 
-\ Named stack items (in memory)
-: NOS   *SP  ;    \ Next on Stack register
-: NOS^  *SP+ ;    \ Use NOS and then pop it 
-: 3RD   2 (SP) ;
-: 4TH   4 (SP) ;
-: 5TH   6 (SP) ;
-: 6TH   8 (SP) ;
+\ Named stack items (in memory) in Assembler wordlist 
+ : NOS   *SP  ;    \ Next on Stack register
+ : NOS^  *SP+ ;    \ Use NOS and then pop it 
+ : 3RD   2 (SP) ;
+ : 4TH   4 (SP) ;
+ : 5TH   6 (SP) ;
+ : 6TH   8 (SP) ;
 
+DECIMAL
+: REG?      ( n -- ?) 0 16 WITHIN ;
+: ADDRESS?  ( n -- ?) 8191 > ; \ lowest RAM address is 8192 
+
+: ?REGISTER ( n --) REG? 0= ABORT" Register expected" ;
+HEX
+: ?ADDR   ( n --)  2000 < ABORT" Invalid memory address" ;
+: SYMBOL? ( n --?) 20 = ; \ is ARG using symbolic addressing
+
+: EQU   CONSTANT ; \ alias 
+
+\ ======================================================
 ASMFORTH  
 \ fetch previous instruction code
 : LOOKBACK ( -- u)  HERE 2- @ ;
@@ -112,16 +125,17 @@ ASMFORTH
     ( addr') @@ B,        \ compile a branch to the NEW sub-routine (B @addr)
 ; 
 
-DECIMAL
-: REG?      ( n -- ?) 0 16 WITHIN ;
-: ADDRESS?  ( n -- ?) 8191 > ; \ lowest RAM address is 8192 
 
-: ?REGISTER ( n --) REG? 0= ABORT" Register expected" ;
-HEX
-: ?ADDR   ( n --)  2000 < ABORT" Invalid memory address" ;
+\ C! needs some smarts to act like Forth 
+: C!   ( c dst -- )  
+    DUP @@ = IF  MOVB,  EXIT THEN  
+\ must be a register    
+    DUP>R       \ save copy of ARG
+    MOVB,       \ compile instruction 
+    R> 8 SRL,   \ perform swap byte on that register 
+;
 
-: EQU   CONSTANT ; \ alias 
-
+ASMFORTH 
 \ load register with immediate argument 
 \ usage:   BEEF R1 #! 
 \       02 BYTE R1 #!   \ load 02 as low bits of R1 
@@ -135,17 +149,6 @@ HEX
 \ store  
 : !    ( src dst -- ) MOV, ; 
 : +!   ( src mem -- ) ?ADDR  @@ + ; 
-
-\ C! needs some smarts to act like Forth 
-: C!   ( c  ARG -- )  
-    DUP REG? 
-    IF  DUP>R     \ save copy of ARG
-        MOVB,     \ compile instruction 
-        R> SWPB,  \ perform swap byte on that register 
-    ELSE 
-        MOVB,
-    THEN 
-;
 
 \ push/pop  any register 
 : PUSH   PUSH, ;
@@ -276,6 +279,16 @@ HEX
 \      \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 : ;CODE    NEXT,  ENDCODE ; \ returns to Forth
+
+\ synonyms from Assembler 
+: IF     IF, ; 
+: THEN   THEN, ; 
+: ELSE   ELSE, ; 
+: BEGIN  BEGIN, ; 
+: WHILE  WHILE, ;
+: AGAIN  AGAIN, ; 
+: UNTIL  UNTIL, ; 
+: REPEAT REPEAT, ; 
 
 CR .( FOR/NEXT)
 \ Simple 'nestable' loop.
