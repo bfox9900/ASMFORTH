@@ -180,8 +180,8 @@ UNTIL respond to the status bits with the following comparison tokens:
 -  <      signed
 -  '>'    signed 
 -  U>     unsigned  
--  U>=    unsigned 
 -  U<     unsigned 
+-  U>=    unsigned 
 -  U<=    unsigned 
 
 Behind the scenes the branching and looping words are actually "compilers"
