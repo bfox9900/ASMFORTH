@@ -68,16 +68,17 @@
 \ R15  for BWLP -or- temp 
 
 
- NEEDS DUMP FROM DSK1.TOOLS
- NEEDS MARKER FROM DSK1.MARKER
- NEEDS WORDSLIST FROM DSK1.WORDLISTS
+NEEDS DUMP FROM DSK1.TOOLS
+NEEDS MARKER FROM DSK1.MARKER
+NEEDS WORDSLIST FROM DSK1.WORDLISTS
 
 ONLY FORTH DEFINITIONS
 VOCABULARY MFORTH
 
 VOCABULARY ASSEMBLER
 ONLY FORTH ALSO ASSEMBLER DEFINITIONS
-INCLUDE DSK7.ASM9900
+INCLUDE DSK7.ASM9900II
+INCLUDE DSK1.ASMLABELS 
 
 HERE
 
@@ -134,6 +135,7 @@ HEX
 
 \ store  
 : !    ( src dst -- ) MOV, ; 
+: +!   ( src Addr --) @@ + ;
 : C!   ( c  ARG -- )  MOVB, ;
 
 \ push/pop  any register 
@@ -241,17 +243,17 @@ HEX
 : U<     HI ;
 : U<=    LE ;
 
-CR .( branching and looping)
-ASMFORTH 
-: IF     ( addr token -- 'jmp') IF, ;
-: THEN   ( 'jmp addr --)  ENDIF, ;
-: ELSE   ( -- addr ) ELSE, ;
+\ CR .( branching and looping) \ Now in ASM9900II 
+\ ASMFORTH 
+\ : IF     ( addr token -- 'jmp') IF, ;
+\ : THEN   ( 'jmp addr --)  ENDIF, ;
+\ : ELSE   ( -- addr ) ELSE, ;
 
-: BEGIN  ( -- addr)  BEGIN,  ;
-: WHILE  ( token -- *while *begin) WHILE,  ;
-: AGAIN  ( *begin --) AGAIN, ;
-: UNTIL  ( *begin token --) UNTIL, ;
-: REPEAT ( *while *begin -- ) AGAIN, ENDIF, ;
+\ : BEGIN  ( -- addr)  BEGIN,  ;
+\ : WHILE  ( token -- *while *begin) WHILE,  ;
+\ : AGAIN  ( *begin --) AGAIN, ;
+\ : UNTIL  ( *begin token --) UNTIL, ;
+\ : REPEAT ( *while *begin -- ) AGAIN, ENDIF, ;
 
 \ ********* ANS/ISO Forth, Stack operators ****************
 : DUP   ( n -- n n) TOS PUSH ;
@@ -283,9 +285,9 @@ CR .( FOR/NEXT)
 \ Use  R@  as a loop index.  Use  nn RP @ 1-  to STEP down faster.
 \ Use a register if you need an up-counter
 
-: FOR   ( n --)  >R  BEGIN, ; \ n must be in TOS register 
-: NEXT  ( -- )   RP @ 1-   NC UNTIL, RDROP ;
-: NEXT2          RP @ 2-   NC UNTIL, RDROP ; 
+: FOR   ( n --)  >R  BEGIN ; \ n must be in TOS register 
+: NEXT  ( -- )   RP @ 1-   NC UNTIL RDROP ;
+: NEXT2          RP @ 2-   NC UNTIL RDROP ; 
 
 
 CR .( sub-routine creator)
@@ -309,13 +311,19 @@ ASMFORTH
 MACRO: COUNT  ( Caddr -- addr len )
     DUP
     NOS 1+
-    *TOS TOS C!
+    TOS @ TOS C!
     TOS 8 RSHIFT 
 ;MACRO 
 
+MACRO /STRING ( addr len n -- addr' len')
+    TOS NOS SUB,    
+    TOS 3RD ADD,    
+    TOS POP,           
+;MACRO 
+
 MACRO: * ( n n -- n') \ multiply operator
-    NOS @+ R3 !
-    TOS R3 MPY,
+    NOS^ R3 !
+    TOS  R3 MPY,
 ;MACRO
 
 MACRO: UM* ( n n -- d) \ unsigned mixed multiply  
@@ -337,21 +345,20 @@ MACRO: UM/MOD ( d n -- n n)
 ;MACRO 
 
 MACRO: U*/ ( n n n -- n )
-    TOS  R0 !     \ move TOS cache register R0 (divisor)
-    NOS^ R1 !     \ POP multiplier to R1
-    NOS^ TOS !    \ multiplicand -> TOS
-    R1  MPY,      \ 32 bit multiply
-    R5  R3 !      \ low order word to R3
+    TOS  R0 !      \ move TOS cache register R0 (divisor)
+    NOS^ R1 !      \ POP multiplier to R1
+    NOS^ TOS !     \ multiplicand -> TOS
+    R1  MPY,       \ 32 bit multiply
+    R5  R3 !       \ low order word to R3
     R0  TOS DIV,   \ unsigned division
 ;MACRO 
 
 MACRO: U/ ( n n -- n ) \ unsigned divide. FAST but be careful
-    TOS  R0 MOV,     \ divisor->R0    
+    TOS  R0 MOV,       \ divisor->R0    
         TOS CLR,
-   *SP+  R5 MOV,     \ MOVE low word to r5 
-    R0  TOS DIV,     \ perform unsigned division 
+    NOS^ R5 MOV,       \ MOVE low word to r5 
+    R0  TOS DIV,       \ perform unsigned division 
 ;MACRO 
-
 
 MACRO: CALL ( arg -- ) 
 \ Use @ for call thru register 
@@ -361,21 +368,8 @@ MACRO: CALL ( arg -- )
     R11 RPOP, 
 ;MACRO 
 
-CODE MIN    ( n1 n2 -- n)
-            *SP TOS CMP,    \ compare n1 & n2
-            @@1 JLT,       \ if n1 < n2 goto @@1:
-            SP INCT,       \ otherwise NIP n1
-            NEXT,
-+CODE MAX   ( n1 n2 -- n)
-            *SP  TOS CMP,   \ compare n1 & n2
-            @@2 JGT,       \ if n1 > n2 goto @@1:
-            SP INCT,       \ otherwise NIP n1
-            NEXT,
-@@1: @@2:   TOS POP,       \ DROP n1, refill TOS
-
-
 MACRO: *MFORTHEND* ;MACRO 
-\ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+\ \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 ASMFORTH ALSO FORTH DEFINITIONS 
 : NEW.  \ erases the MFORTH definitions AFTER '*MFORTHEND*'
