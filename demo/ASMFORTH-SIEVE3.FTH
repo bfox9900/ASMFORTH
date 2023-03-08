@@ -10,7 +10,7 @@
 
 \ Removed SIZE in R8. Used immediate compare 
 
-\ This version uses the library FILLW rather than coding it in Forth 
+\ This version uses the Camel99 Forth FILLW rather than coding it in ASMForth 
 
 HOST 
 DECIMAL 8190 CONSTANT SIZE
