@@ -126,11 +126,12 @@ ASMFORTH
 ; 
 
 
-\ C! needs some smarts to act like Forth 
+\ Add some smarts to C! 
 : C!   ( c dst -- )  
-    DUP @@ = IF  MOVB,  EXIT THEN  
-\ must be a register    
-    DUP>R       \ save copy of ARG
+    DUP SYMBOL? IF  MOVB,  EXIT THEN  \ do MOVB and get out 
+
+\ dst must be a register    
+    DUP>R       \ save copy of DST register 
     MOVB,       \ compile instruction 
     R> 8 SRL,   \ perform swap byte on that register 
 ;
