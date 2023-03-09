@@ -27,10 +27,20 @@ CODE FORNEST  \ 13.5 seconds
 ;CODE
 
 \ 1,000,000 iterations 
-CODE NESTED  \ 14.5 seconds
+CODE NESTED  \ 14.51 seconds
     100 #FOR
       100 #FOR
           100 #FOR
+           NEXT
+        NEXT
+    NEXT
+;CODE
+
+CODE FASTER  \ 14.18 seconds
+    100 R0 #! \ loop limit in a register 
+    R0 FOR    \ pass Register to FOR :-) 
+      R0 FOR
+          R0 FOR
            NEXT
         NEXT
     NEXT

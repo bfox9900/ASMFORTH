@@ -107,7 +107,7 @@ DECIMAL
 
 : ?REGISTER ( n --) REG? 0= ABORT" Register expected" ;
 HEX
-: ?ADDR   ( n --)  2000 < ABORT" Invalid memory address" ;
+: ?ADDR   ( n --)  2000 U< ABORT" Invalid memory address" ;
 : SYMBOL? ( n --?) 20 = ; \ is ARG using symbolic addressing
 
 : EQU   CONSTANT ; \ alias 
@@ -125,16 +125,16 @@ ASMFORTH
     ( addr') @@ B,        \ compile a branch to the NEW sub-routine (B @addr)
 ; 
 
-
 \ Add some smarts to C! 
-: C!   ( c dst -- )  
-    DUP SYMBOL? IF  MOVB,  EXIT THEN  \ do MOVB and get out 
+: C!   ( c dst -- )  MOVB, ; 
 
+\ Failed
+ \   DUP SYMBOL? IF  MOVB,  EXIT THEN  \ do MOVB and get out 
 \ dst must be a register    
-    DUP>R       \ save copy of DST register 
-    MOVB,       \ compile instruction 
-    R> 8 SRL,   \ perform swap byte on that register 
-;
+\    DUP>R       \ save copy of DST register 
+\    MOVB,       \ compile instruction 
+\    R> 8 SRL,   \ perform swap byte on that register 
+\ ;
 
 ASMFORTH 
 \ load register with immediate argument 
@@ -143,9 +143,11 @@ ASMFORTH
 : #!    ( n REG -- ) DUP ?REGISTER SWAP LI, ; \ n -> REG
 : BYTE   ( 0c --  0c00 )  ><  ; \ swap byte to other side of register 
 
+\ add error checking to Assembler versions 
 \ fetch 
-: @       ** ;  \ indirect addressing alias 
-: @+      *+ ;  \ indirect addressing, auto-increment alias 
+: @    DUP ?REGISTER  ** ; \ indirect addressing alias 
+: @+   DUP ?REGISTER  *+ ; \ indirect addressing, auto-increment alias 
+: @@   DUP ?ADDR  @@ ;
 
 \ store  
 : !    ( src dst -- ) MOV, ; 
@@ -299,7 +301,7 @@ CR .( FOR/NEXT)
 \ Use a register if you need an up-counter
 
 : FOR   ( arg --) RPUSH BEGIN ; 
-: #FOR  ( n --) # >R BEGIN ; \ literal goes to TOS -> Rstack DROP
+: #FOR  ( n --) # >R BEGIN ; \ literal goes thru TOS -> Rstack, DROP
 : NEXT  ( -- )   RP @ 1-   NC UNTIL RDROP ;
 : NEXT2          RP @ 2-   NC UNTIL RDROP ; 
 

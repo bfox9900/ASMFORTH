@@ -30,43 +30,49 @@ ASMFORTH
 HEX
 \ * VDP write to register. Kept the TI name
 : VWTR   ( c reg -- )   \ Usage: 5 7 VWTR
-    TOS ><  +         \ combine 2 bytes to one cell
+    TOS >< 
+    NOS^ TOS +         \ combine 2 bytes to one cell
     TOS 8000 #OR  VDPA!
     DROP 
 ;
 
 : VFILL ( Vaddr cnt char -- )
-    TOS R5 !      \ R5 = CHAR
+    TOS R5 !       \ R5 = CHAR
     R5 ><
-    NOS^ R1 !      \ cnt to temp 
-    NOS^ TOS C! 
+    R0 POP        \ cnt to R0
+    TOS POP       \ Vaddr to TOS 
     TOS 4000 #OR VDPA! 
-    R1 TOS ! 
-    FOR
-        R5 VDPWD @@ C!
+    VDPWD R3 #! 
+    R0 FOR
+        R5 *R3 C!
     NEXT
     DROP 
 ;
 
 : VREAD ( Vaddr addr n --)
-    TOS  R0 !
-    NOS^ R5 !
-    NOS^ TOS ! VDPA!  \ TOS is refilled after this call
+    TOS R0 !
+    R5 POP
+    TOS POP  VDPA!  
     VDPRD R3 #! 
-    R5 TOS C! 
-    FOR
-        R3 ** R5 *+ C!
+    R0 FOR
+        *R3 *R5+ C!
     NEXT
+    DROP 
 ;
 
 : VWRITE ( addr Vaddr len -- )
-        [ TOS R0 MOV,
-         *SP+ TOS MOV,    \ TOS = Vaddr
-          TOS 4000 ORI, ]
-          VDPA!           \ TOS = addr (sub-routine does a DROP)
-        [ BEGIN
-           *TOS+ VDPWD @@ MOVB,
-            R0 DEC,
-         -UNTIL
-         DROP ]
+    TOS R0 !
+    TOS POP   
+    TOS 4000 #OR VDPA! 
+    TOS POP    \  pops addr into TOS 
+    VDPWD R3 #! 
+    R0 FOR 
+        *TOS+  *R3  C!
+    NEXT    
+    DROP
 ;
+
+HEX 
+CODE FILLSCREEN  
+     0 #  3C0 #  CHAR A #  VFILL 
+;CODE      

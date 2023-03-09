@@ -1,4 +1,6 @@
-\ ASMForthII version. Meant to be used with a separate wordlis
+\ ASMForthII RPN Assembler                       Mar 8 2023  Brian Fox 
+
+\ Meant to be used with a separate wordlist
 \ Based on TI-FORTH ASSEMBLER modified by Mark Wills, Turboforth
 \ Simplfied branching and looping by Brian Fox
 
@@ -23,7 +25,48 @@ DECIMAL
 10 CONSTANT R10   11 CONSTANT R11
 12 CONSTANT R12   13 CONSTANT R13
 14 CONSTANT R14   15 CONSTANT R15
- 
+
+HEX
+\ Wycove assembler register syntax:
+: @@        020    ;  \ symbolic addressing
+: **        010 +  ;  \ indirect addressing
+: *+        030 +  ;  \ indirect addressing, auto-increment
+: ()        20  +  ;  \ indexed addressing
+
+\ INDIRECT addressing register names 
+: *R0    R0 ** ; 
+: *R1    R1 ** ;    : *R2    R2 ** ;   : *R3    R3 ** ;
+: *R4    R4 ** ;    : *R5    R5 ** ;   : *R6    R6 ** ;
+: *R7    R7 ** ;    : *R8    R8 ** ;   : *R9    R9 ** ;
+: *R10   R10 ** ;   : *R11  R11 ** ;   : *R12  R12 ** ;
+: *R13   R13 ** ;   : *R14  R14 ** ;   : *R15  R15 ** ;
+
+\ INDIRECT addressing, auto-increment register names 
+: *R0+    R0 *+ ; 
+: *R1+    R1 *+ ;    : *R2+    R2 *+ ;   : *R3+    R3 *+ ;
+: *R4+    R4 *+ ;    : *R5+    R5 *+ ;   : *R6+    R6 *+ ;
+: *R7+    R7 *+ ;    : *R8+    R8 *+ ;   : *R9+    R9 *+ ;
+: *R10+   R10 *+ ;   : *R11+  R11 *+ ;   : *R12+  R12 *+ ;
+
+\ indexed addressing register names 
+: (R0)    TRUE ABORT" R0 cannot be indexed" ; 
+: (R1)    R1 () ;   : (R2)    R2 () ;   : (R3)    R3 () ;
+: (R4)    R4 () ;   : (R5)    R5 () ;   : (R6)    R6 () ;
+: (R7)    R7 () ;   : (R8)    R8 () ;   : (R9)    R9 () ;
+: (R10)  R10 () ;   : (R11)  R11 () ;   : (R12)  R12 () ;
+: (R13)  R13 () ;   : (R14)  R14 () ;   : (R15)  R15 () ;
+
+ \ ============================================================
+CR .( CAMEL99 Forth named registers)
+R4 CONSTANT TOS   R6 CONSTANT SP    R8 CONSTANT W    
+R7 CONSTANT RP    R9 CONSTANT IP
+
+: *TOS     TOS ** ;  : *TOS+    TOS *+ ;  : (TOS)    TOS () ; 
+: *SP       SP ** ;  : *SP+      SP *+ ;  : (SP)      SP () ; 
+: *RP       RP ** ;  : *RP+      RP *+ ;  : (RP)      RP () ;
+: *W        W **  ;  : *W+       W *+  ;  : (W)       W ()  ;
+: *IP       IP ** ;  : *IP+      IP *+ ;  : (IP)      IP () ;  
+
 HEX
 : ADR? ( n -- ? ) DUP 1F > SWAP 30 < AND ;  \ address or register?
 : GOP' ( arg instr --)
@@ -111,12 +154,6 @@ HEX                  \ Action if TRUE
 3000 GCOP LDCR,
 3400 GCOP STCR,
  
-HEX
-\ Wycove assembler register syntax:
-: @@        020    ;  \ symbolic addressing
-: **        010 +  ;  \ indirect addressing
-: *+        030 +  ;  \ indirect addressing, auto-increment
-: ()        20  +  ;  \ indexed addressing
  
 CR .( Simplified branching and looping)
 : AJUMP,  ( token --) >< 1000 + , ;   \ >1000+token makes a jump instruction
@@ -132,36 +169,6 @@ CR .( Simplified branching and looping)
 : AGAIN,  ( *begin --)  HERE  0 JMP, <<BACK ;
 : UNTIL,  ( *begin token --) HERE SWAP AJUMP, <<BACK ;
 : REPEAT, ( *while *begin -- ) AGAIN, THEN, ;
- 
-\ ============================================================
-CR .( CAMEL99 Forth customization)
-4 CONSTANT TOS
-: (TOS)     TOS () ;
-: *TOS      TOS ** ;
-: *TOS+     TOS *+ ;
- 
-6 CONSTANT SP
-: (SP)      SP () ;
-: *SP       SP ** ;
-: *SP+      SP *+ ;
- 
-7 CONSTANT RP
-: (RP)      RP () ;
-: *RP       RP ** ;
-: *RP+      RP *+ ;
- 
-8 CONSTANT W
-: (W)       W ()  ;
-: *W        W **  ;
-: *W+       W *+  ;
- 
-9 CONSTANT IP
-: (IP)      IP () ;
-: *IP       IP ** ;
-: *IP+      IP *+ ;
- 
-: *R10      R10 ** ;
-: *R11      R11 ** ;
  
 CR .( Pseudo instructions)
 : RT,     ( -- )  R11 ** B, ;
