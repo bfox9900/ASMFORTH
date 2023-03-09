@@ -293,12 +293,13 @@ HEX
 
 CR .( FOR/NEXT)
 \ Simple 'nestable' loop.
-\ Uses return stack for index because registers are in short supply.
+\ ARG is any valid cell argument, which is pushed onto Rstack 
 \ Speed reduction is ~11% on 9900 VS index in a register.
 \ Use  R@  as a loop index.  Use  nn RP @ 1-  to STEP down faster.
 \ Use a register if you need an up-counter
 
-: FOR   ( n --)  >R  BEGIN ; \ n must be in TOS register 
+: FOR   ( arg --) RPUSH BEGIN ; 
+: #FOR  ( n --) # >R BEGIN ; \ literal goes to TOS -> Rstack DROP
 : NEXT  ( -- )   RP @ 1-   NC UNTIL RDROP ;
 : NEXT2          RP @ 2-   NC UNTIL RDROP ; 
 

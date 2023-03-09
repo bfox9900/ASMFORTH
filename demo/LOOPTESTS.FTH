@@ -28,7 +28,7 @@ CODE DOWHILE
 \ It does not consume a register while running because 
 \ the counter is on the return stack
 CODE FORNEXT 
-     FFFF # FOR 
+     FFFF #FOR 
         
          RP @  R0 !   \ get the loop index via the RP register
                       \ store it in R0 

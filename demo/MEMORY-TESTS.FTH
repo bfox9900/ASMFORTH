@@ -8,7 +8,7 @@ VARIABLE Y
 
 CODE FORLOOP 
   R0 OFF       \ empty an accumulator register  
-  FFFF # FOR   \ FOR is a down counting loop using the Return stack  
+  FFFF #FOR   \ FOR is a down counting loop using the Return stack  
        RP @ Y @@ !  \ read loop index from top of return stack RP register 
        X @@ 1+    \ inc X 
        Y @@ R0 +  \ add y to R0 
