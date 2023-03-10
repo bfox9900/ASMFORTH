@@ -8,6 +8,7 @@ HEX
 8C02 EQU VDPWA
 
 ASMFORTH  
+\ VDPA! takes arg from TOS but leaves it on the stack 
 : VDPA! ( Vaddr -- Vaddr) \ set vdp address (read mode)
     R1 STWP,
     0 LIMI,
@@ -19,6 +20,7 @@ ASMFORTH
     VDPA! 
     TOS OFF
     VDPRD @@  9 (R1) C!  \ read data into odd byte of R4
+    DROP 
 ;
 
 : VC! ( c Vaddr -- )
@@ -39,9 +41,9 @@ HEX
 : VFILL ( Vaddr cnt char -- )
     TOS R5 !       \ R5 = CHAR
     R5 ><
-    R0 POP        \ cnt to R0
-    TOS POP       \ Vaddr to TOS 
-    TOS 4000 #OR VDPA! 
+    R0 POP         \ cnt to R0
+    TOS POP        \ Vaddr to TOS 
+    TOS 4000 #OR  VDPA! 
     VDPWD R3 #! 
     R0 FOR
         R5 *R3 C!
@@ -62,17 +64,28 @@ HEX
 
 : VWRITE ( addr Vaddr len -- )
     TOS R0 !
-    TOS POP   
-    TOS 4000 #OR VDPA! 
-    TOS POP    \  pops addr into TOS 
+    TOS POP       \ Vaddr in TOS 
+    TOS 4000 #OR VDPA! \ set write address 
+    TOS POP       \  pop RAM addr into TOS 
     VDPWD R3 #! 
     R0 FOR 
-        *TOS+  *R3  C!
+        *TOS+ *R3 C!
     NEXT    
     DROP
 ;
 
+\ test code 
+
 HEX 
-CODE FILLSCREEN  
-     0 #  3C0 #  CHAR A #  VFILL 
-;CODE      
+\ high level words 
+: READSCR       0 # 2000 #  3C0 # VREAD ; 
+: WRITESCR   2000 #    0 #  3C0 # VWRITE ;
+: CLS           0 #  3C0 #   BL #  VFILL ;
+: DELAY      TOS FOR NEXT DROP ;
+
+CODE TEST-R/W
+    READSCR 
+    CLS  
+    FFFF # DELAY 
+    WRITESCR 
+;CODE     
