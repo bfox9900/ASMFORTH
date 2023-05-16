@@ -32,9 +32,9 @@ ASMFORTH
 HEX
 \ * VDP write to register. Kept the TI name
 : VWTR   ( c reg -- )   \ Usage: 5 7 VWTR
-    TOS >< 
+    TOS ><             \ swap bytes in TOS register
     NOS^ TOS +         \ combine 2 bytes to one cell
-    TOS 8000 #OR  VDPA!
+    TOS 8000 #OR VDPA!
     DROP 
 ;
 
