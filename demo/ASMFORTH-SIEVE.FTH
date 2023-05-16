@@ -34,7 +34,7 @@ CODE DO-PRIME ( -- n)
    FLAGS R5 #!   \ array base address 
    SIZE  R8 #!   \ size 
    0 #           \ counter on top of Forth stack 
-   SIZE # FOR 
+   SIZE #FOR 
     R5 @+ R3 CMPB       \ FLAGS C@+ byte-compared to R3 (ie: 0)
     <> IF               \ not equal to zero ? 
           R0 R1 !       \ I -> R1

@@ -19,7 +19,7 @@ ASMFORTH
     TOS R0 !        \ char -> R0 
     TOS POP         \ size in TOS for FOR to pickup 
     R1  POP         \ Memory location in R1
-    FOR
+    TOS FOR         \ FOR takes a register argument 
        R0 R1 @+ !   \ write ones to FLAGS
     NEXT2           \ *NEW* counts down by 2 
 ;                 
@@ -32,7 +32,7 @@ ASMFORTH
   FLAGS R5 #!   \ array base address 
   0 #           \ counter on top of Forth stack 
 
-  SIZE # FOR 
+  SIZE #FOR     \ #FOR takes a literal number argument 
     R5 @+ R3 CMPB       \ FLAGS C@+ byte-compared to R3 (ie: 0)
     <> IF               \ not equal to zero ? 
           R0 R1 !       \ I -> R1
