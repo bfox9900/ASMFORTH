@@ -30,7 +30,7 @@ CODE RUN    20th  ;CODE
 HOST 
 :  1MILLION   CR ."  1 million nest/unnest operations" RUN ;
 
-CR .( enter 1million or 32million )
+CR .( start demo like this: )
 \ ELAPSE 1MILLION 
 
 
