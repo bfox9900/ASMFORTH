@@ -1,4 +1,4 @@
-\ ASMFORTH LOOP TESTS
+\ ASMFORTH LOOP TESTS (for older compiler V0.73)
 
 \ COLD 
 

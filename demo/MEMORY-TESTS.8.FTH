@@ -1,5 +1,4 @@
-\ ASMFORTH LOOP TESTS
-
+\ ASMFORTH II memory tests for version 0.8     July 26 2023
 \ COLD 
 
 HEX 
