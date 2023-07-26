@@ -1,4 +1,4 @@
-\ SIEVE in ASMFORTH for Camel99 Forth                 Feb 2023 Brian Fox
+\ SIEVE in ASMFORTH for Camel99 Forth                 Mar 1 2023 Brian Fox
 \ based on code by @Reciprocating Bill atariage.com 
 
 \ Original notes by BIll.
@@ -8,32 +8,23 @@
 \ * 10 iterations 6.4 seconds on 16-bit console
 \ * ~10 seconds on stock console
 
-\ * ASMForth version runs in 10 seconds 
+\ *****************************************
+\ *** code to test asmforth II Ver. 0.8 ***
+\ *****************************************
+
+\ This version uses the Camel99 Forth FILLW rather than coding it in ASMForth 
+
 HOST 
 DECIMAL 8190 CONSTANT SIZE
 HEX     2000 CONSTANT FLAGS   \ array in Low RAM 
 
 ASMFORTH 
-: FILLW ( addr size char --) \ nestable sub-routine 
-    R0 POP            \ size 
-    R1 POP            \ base of array
-    BEGIN
-        TOS R1 @+ !   \ write ones to FLAGS
-        R0 2-
-    NC UNTIL  
-    DROP 
-; 
-
-
-HEX
 CODE DO-PRIME ( -- n)  
-  FLAGS # SIZE # 0101 # FILLW
-
 \ inits 
    R0 OFF        \ clear loop index 
    R3 OFF        \ 0 constant
    FLAGS R5 #!   \ array base address 
-   SIZE  R8 #!   \ size 
+
    0 #           \ counter on top of Forth stack 
    SIZE #FOR 
     R5 @+ R3 CMPB       \ FLAGS C@+ byte-compared to R3 (ie: 0)
@@ -44,21 +35,28 @@ CODE DO-PRIME ( -- n)
           R0 R2 !       \ I -> R2 ( R2 is K index) 
           R1 R2 +       \ PRIME K +! 
           BEGIN  
-            R2 R8 CMP   \ K SIZE compare 
+            R2 SIZE #CMP  \ K SIZE compare 
           < WHILE  
             R3 FLAGS (R2) C! \ reset byte FLAGS(R2)
             R1 R2 +     \ PRIME K +! 
           REPEAT 
-          TOS 1+        \ increment count of primes
+          TOS 1+         \ increment count of primes
     THEN 
-    R0 1+               \ bump index register
+    R0 1+                \ bump index register
   NEXT 
 ;CODE  
 
-HOST   ( Switch back to Host Forth )
+HOST
+INCLUDE DSK1.FILLW 
+
 DECIMAL 
 : PRIMES ( -- )
    PAGE ."  10 Iterations"
-   10 0 DO   DO-PRIME  CR . ." primes"  LOOP
+   10 0 DO  
+   [ HEX ]
+        FLAGS SIZE  0101 FILLW 
+   [ DECIMAL ]
+        DO-PRIME  CR . ." primes"  
+    LOOP
    CR ." Done!"
 ;
