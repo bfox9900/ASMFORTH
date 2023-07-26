@@ -35,4 +35,33 @@ CODE FORNEXT
       NEXT 
 ;CODE       
          
-       
+\ alternative: Load a number in a register, pass register to FOR
+\ In this example we use the TOS cache  (ie: R4) 
+
+CODE FORNEXTREG
+      FFFF #        \ push number onto data stack, (goes in TOS register)
+      TOS FOR 
+       ( loop payload goes here )
+      NEXT 
+;CODE 
+
+
+\ nesting is simple because of the return stack
+ASMFORTH 
+: INNER               \ ASMFORTH colon makes a nestable sub-routine with return stack
+     1000 # 
+     TOS FOR          \ FOR NEXT also uses return stack for downcounter
+  
+     NEXT 
+;
+
+: OUTER     \ code words can be called from HOST Forth 
+   1000 # 
+   TOS FOR 
+       INNER   \ call the inner loop.
+   NEXT 
+;
+
+CODE  RUN     OUTER  ;CODE   \ code words are callable from HOST Forth
+    
+
