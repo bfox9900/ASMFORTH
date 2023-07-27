@@ -31,28 +31,30 @@ CODE DO-PRIME ( -- n)
   FLAGS # SIZE # 0101 # FILLW
 
 \ inits 
-  R0 OFF               \ clear loop index 
-  R3 OFF               \ 0 constant
-  FLAGS R5 #!          \ array base address 
+  R0 OFF               \ 0 constant
+  R3 OFF               \ clear loop index register
 
+  FLAGS R5 #!          \ array base address 
+  SIZE R8 #!           \ size of array 
+  
   0 #                  \ counter on top of Forth stack (ie: in R4)
-  SIZE #FOR 
-  R5 @+ R3 CMPB        \ FLAGS byte-compared to 0 
+  R8 FOR               \ use R8 to load loop counter 
+  R5 @+ R0 CMPB        \ FLAGS byte-compared to 0 
   <> IF                \ not equal to zero ? 
-      R0 R1 !          \ I -> R1
+      R3 R1 !          \ I -> R1
       R1 2*  
       3 R1 #+!         \ R1 3+
-      R0 R2 !          \ I -> R2 ( R2 is K index) 
+      R3 R2 !          \ I -> R2 ( R2 is K index) 
       R1 R2 +          \ PRIME K +! 
       BEGIN  
-        R2 SIZE #CMP   \ K SIZE compare 
+        R2 R8 CMP      \ K SIZE compare 
       < WHILE  
-        R3 FLAGS (R2) C! \ reset byte FLAGS(R2)
+        R0 FLAGS (R2) C! \ reset byte FLAGS(R2)
         R1 R2 +        \ PRIME K +! 
       REPEAT 
       TOS 1+           \ increment count of primes
     THEN 
-    R0 1+              \ bump index register
+    R3 1+              \ bump LOOP index register
   NEXT 
 ;CODE  
 
