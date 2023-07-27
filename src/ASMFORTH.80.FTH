@@ -79,7 +79,7 @@ VOCABULARY MFORTH
 
 VOCABULARY ASSEMBLER
 ONLY FORTH ALSO ASSEMBLER DEFINITIONS
-INCLUDE DSK7.ASM9900II  ( CHANGE DSK to where you put this file )
+INCLUDE DSK7.ASM9900II  ( CHANGE DSK to where you put this file)
 
 DECIMAL
 : ADDRESS?  ( n -- ?) 8191 U> ; \ lowest RAM address is 8192 
@@ -91,11 +91,11 @@ HEX
 : <SRC>  ( n -- n | n 20)  \ used with fetch operators
     DUP ADDRESS? IF  @@  EXIT   THEN 
     DUP REG?     IF  **  EXIT   THEN 
-    DUP MODE?    IF  ( nothing) THEN  
+    MODE? ABORT" Cannot fetch indexed or indirect register"   
 ;
 
 : <DST>  ( n -- n | n 20)  \ used with store operators
-    DUP ADDRESS? IF  @@   THEN 
+    DUP ADDRESS? IF  @@  EXIT THEN 
 ;
 
 \ aborting error detection words 
@@ -420,7 +420,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.80 Jul 25 2023"
+    PAGE ." ASMForth II  V0.80 Jul 26 2023"
     ASMFORTH
     ABORT ;
 
