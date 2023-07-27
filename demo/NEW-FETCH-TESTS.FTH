@@ -2,18 +2,19 @@
 
 \ @ (fetch) is smart in V0.8 and detects a register or a valid address
 
-FORTH 
 
+HOST
 VARIABLE Y  
 VARIABLE Z 
 
 CREATE X  99 , 100 , 101 , 102 , 103 , 104 , 105 , 106 , 
+CREATE Q   8 CELLS ALLOT 
 
 ASMFORTH 
-\ @ compiles symbolic addressing operation 
+\ @ compiles symbolic addressing operation to register
 CODE TEST1  ( -- n)   
-    0 #  
-    X @ TOS !  
+    DUP          \ free up top of stack cache register   
+    X @ TOS !    
 ;CODE   
 
 \ @ compiles a register indirect operation 
@@ -30,4 +31,20 @@ CODE TEST3 ( -- n1 n2)
     DUP 
     R1 @+ TOS !
 ;CODE     
+
+CODE MEM2MEM  \ moves memory to memory in one instruction
+    Z @ Y ! 
+;CODE     
+
+ASMFORTH 
+
+\ CODE word that can be called from Forth 
+CODE MOVECELLS ( src dst n -- ) \ tos=n NOS=DST  3rd=src 
+    NOS^ R1 !             \ POP dst into a register for auto-incrementing 
+    NOS^ R0 !             \ POP source into a register  
+    TOS FOR               \ FOR takes n from TOS register and pushes it onto Rstack
+       R0 @+  R1 @+ !     \ store a cell and auto-increment both registers
+    NEXT 
+    DROP                  \ refill TOS register from data stack memory  
+;CODE    
 
