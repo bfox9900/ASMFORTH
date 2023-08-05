@@ -17,10 +17,10 @@ HEX     2000 CONSTANT FLAGS   \ array in Low RAM
 
 ASMFORTH 
 : FILLW ( addr size U --)  
-    R0 POP         \ size in TOS for FOR to pickup 
+    R0 POP         \ size in R0 for FOR to pickup 
     R1 POP         \ Memory location in R1
     R0 FOR         \ FOR takes the R0 argument 
-       TOS *R1+ !  \ write ones to FLAGS
+       TOS *R1+ !  \ write U to addr, bump addr by 2
     NEXT2          \ *NEW* counts down by 2 
     DROP 
 ;                 
