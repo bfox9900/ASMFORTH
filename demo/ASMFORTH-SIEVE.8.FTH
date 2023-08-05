@@ -16,13 +16,12 @@ DECIMAL 8190 CONSTANT SIZE
 HEX     2000 CONSTANT FLAGS   \ array in Low RAM 
 
 ASMFORTH 
-: FILLW ( addr size char --) \ nestable sub-routine 
-    TOS R0 !        \ char -> R0 
-    TOS POP         \ size in TOS for FOR to pickup 
-    R1  POP         \ Memory location in R1
-    TOS FOR         \ FOR takes a register argument 
-       R0 *R1+ !    \ write ones to FLAGS
-    NEXT2           \ *NEW* counts down by 2 
+: FILLW ( addr size U --)  
+    R0 POP         \ size in TOS for FOR to pickup 
+    R1 POP         \ Memory location in R1
+    R0 FOR         \ FOR takes the R0 argument 
+       TOS *R1+ !  \ write ones to FLAGS
+    NEXT2          \ *NEW* counts down by 2 
     DROP 
 ;                 
 
