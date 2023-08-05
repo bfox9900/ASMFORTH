@@ -1,4 +1,4 @@
-\ SIEVE in ASMFORTH for Camel99 Forth                 July 2023 Brian Fox
+\ SIEVE in ASMFORTH for Camel99 Forth           Aug 2023 Brian Fox
 \ based on code by @Reciprocating Bill atariage.com 
 
 \ Minor mods for Version 0.8 
@@ -10,8 +10,10 @@
 \ * 10 iterations 6.4 seconds on 16-bit console
 \ * ~10 seconds on stock console
 
-\ * ASMForth version runs in 10 seconds 
+\ * ASMForth II .81 version runs in 9.26 seconds 
 HOST 
+INCLUDE DSK1.ELAPSE \ for time measurement
+
 DECIMAL 8190 CONSTANT SIZE
 HEX     2000 CONSTANT FLAGS   \ array in Low RAM 
 
@@ -31,12 +33,12 @@ CODE DO-PRIME ( -- n)
 
 \ inits 
   R0 OFF               \ 0 constant
-  R3 OFF               \ clear loop index register
+  R3 OFF               \ clear I register
 
   FLAGS R5 #!          \ array base address 
   SIZE R8 #!           \ size of array 
   
-  0 #                  \ counter on top of Forth stack (ie: in R4)
+  0 #                  \ prime # counter on Forth stack (ie: in R4)
   R8 FOR               \ use R8 to load loop counter 
   R5 @+ R0 CMPB        \ FLAGS byte-compared to 0 
   <> IF                \ not equal to zero ? 
@@ -64,3 +66,5 @@ DECIMAL
    10 0 DO   DO-PRIME  CR . ." primes"  LOOP
    CR ." Done!"
 ;
+
+
