@@ -95,7 +95,7 @@ HEX
 ;
 
 : <DST>  ( n -- n | n 20)  \ used with store operators
-    DUP ADDRESS? IF  @@  EXIT THEN 
+    DUP ADDRESS? IF  @@  THEN 
 ;
 
 \ aborting error detection words 
