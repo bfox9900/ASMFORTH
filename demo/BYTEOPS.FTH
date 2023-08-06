@@ -2,6 +2,8 @@
 
 \ The 9900 is little endian so bytes are on the right side.
 \ C! is just a MOVB ( move byte) instruction.
+\ Study the output on the data stack after the program runs
+\ to correlate the instructions to the results
 
 HOST 
 HEX 
@@ -11,22 +13,22 @@ CREATE Y  0099 ,
 
 ASMFORTH 
 CODE TEST-C! ( -- n n n)
-    DUP               \ free up TOS 
-    TOS OFF           \ clr tos  
+\ ASMFORTH              Output in Forth Assembler 
+    DUP              \  SP DECT,  TOS *SP MOV,
+    TOS OFF          \  TOS CLR, 
 
-    X @@ TOS MOVB,    \ Forth Assembler code is still legal
+    X @@ TOS MOVB,   \ Forth Assembler code is still legal
 
-\ ASMFORTH           Output in Forth Assembler 
-    DUP            \  SP DECT,  TOS *SP MOV, 
+    DUP           
     TOS OFF 
-    X @  TOS C!    \  X @@ TOS MOVB, 
+    X @  TOS C!      \  X @@ TOS MOVB,  (right side only)
+    X ><             \  X @@ SWPB,  swap bytes in memory
+    X @ PUSH         \  DUP  X @@ TOS MOV, 
 
-    X ><           \ swap bytes in memory at X
-    X @ PUSH 
-    Y @ PUSH       \ push the contents of Y into TOS  
+    Y @ PUSH         \  DUP  X @@ TOS MOV, 
   
-    X @  Y @ C!    \  X @@  Y @@ MOVB, 
-    Y @ PUSH   
+    X @  Y @ C!      \  X @@  Y @@ MOVB, right side only 
+    Y @ PUSH         \  DUP   Y @@ TOS MOV, 
 ;CODE      
 
 TEST-C!
