@@ -1,4 +1,4 @@
-\ SIEVE in ASMFORTH for Camel99 Forth           Aug 2023 Brian Fox
+\ SIEVE in ASMFORTH V.81 for Camel99 Forth    Aug 2023 Brian Fox
 \ based on code by @Reciprocating Bill atariage.com 
 
 \ Minor mods for Version 0.8 
