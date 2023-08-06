@@ -171,8 +171,8 @@ ASMFORTH
 : C!   ( c dst -- )    <DST> MOVB, ; 
 
 \ push/pop  any register 
-: PUSH  ?REGISTER PUSH, ;
-: POP   ?REGISTER POP,  ;
+: PUSH  PUSH, ;
+: POP   POP,  ;
 
 CR .( Forth Intrinics)
 
@@ -206,8 +206,8 @@ CR .( Forth Intrinics)
 : #OR   ( reg lit -- ) >R ?REGISTER R> ORI, ;
 
 .(  return stack operators .)
-: RPUSH  ?REGISTER RPUSH, ; \ aliases from the assembler 
-: RPOP   ?REGISTER RPOP,  ;
+: RPUSH   RPUSH, ; \ aliases from the assembler 
+: RPOP    RPOP,  ;
 
 \ *********************************************
 \ *           ANS Forth Extensions            *
