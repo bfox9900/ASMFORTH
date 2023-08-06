@@ -39,7 +39,7 @@ CODE DO-PRIME ( -- n)
   SIZE R8 #!           \ size of array 
   
   0 #                  \ prime # counter on Forth stack (ie: in R4)
-  R8 FOR               \ use R8 to load loop counter 
+  SIZE #FOR            \ load a constant directly to R11 counter 
   R5 @+ R0 CMPB        \ FLAGS byte-compared to 0 
   <> IF                \ not equal to zero ? 
       R3 R1 !          \ I -> R1
@@ -48,7 +48,7 @@ CODE DO-PRIME ( -- n)
       R3 R2 !          \ I -> R2 ( R2 is K index) 
       R1 R2 +          \ PRIME K +! 
       BEGIN  
-        R2 R8 CMP      \ K SIZE compare 
+        R2 R8 CMP   \ K SIZE compare 
       < WHILE  
         R0 FLAGS (R2) C! \ reset byte FLAGS(R2)
         R1 R2 +        \ PRIME K +! 

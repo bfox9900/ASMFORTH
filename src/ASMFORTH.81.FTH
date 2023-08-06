@@ -316,15 +316,13 @@ CR .( FOR/NEXT *NEW* FASTER IN REGISTER )
 
 : FOR   ( arg --) 
     R11 RPUSH 
-    ( ARG) R11 !  
+    ( arg) R11 !  
     BEGIN ; 
 
 \ Alternative using literal number, N goes thru TOS -> R11 
-: #FOR  ( n --)   
-    #           \ put literal into TOS register 
-    R11 RPUSH   \ save R11  
-    TOS R11 !   \ put loop limit into R11 
-    DROP        \ restore TOS register
+: #FOR  ( arg --)  
+    R11 RPUSH      \ save R11  
+    ( arg) R11 #!  \ LI R11,arg
     BEGIN ;
 
 : NEXT  ( -- )   
