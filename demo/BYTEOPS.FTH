@@ -1,4 +1,4 @@
-\ BYTEOPS.FTH demo code 
+\ BYTEOPS.FTH demo code UPDATED for V .81  Aug 2023  B Fox
 
 \ The 9900 is little endian so bytes are on the right side.
 \ C! is just a MOVB ( move byte) instruction.
