@@ -5,7 +5,8 @@
 
 HOST 
 HEX 
-CREATE X  AABB ,
+\ create some variables 
+CREATE X  AABB ,  
 CREATE Y  0000 ,
 
 ASMFORTH 
@@ -13,18 +14,19 @@ CODE TEST-C! ( -- n n n)
     DUP               \ free up TOS 
     TOS OFF           \ clr tos  
 
-    X @@  TOS MOVB,   \ assembler version 
+    X @@ TOS MOVB,   \ assembler version 
 
-    DUP 
-    X @@  TOS C!     \ C! has bit shifting
+\ ASMFORTH           Output in Forth Assembler 
+    DUP            \  SP DECT,  TOS *SP MOV, 
+    X @  TOS C!    \  X @@ TOS MOVB, 
 
-    X @@  Y @@ C!    \ C! has no bit shifting mem 2 mem 
-    
-    DUP 
-    Y @@  TOS C!     \ with bit shifting 
-
+    X @  Y @ C!    \  X @@  Y @@ MOVB, 
+  
 ;CODE      
 
 TEST-C!
 .S 
+
+X ?
+CR Y ? 
     
