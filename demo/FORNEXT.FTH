@@ -27,7 +27,9 @@ CODE FORNEST  \ 13.5 seconds
 ;CODE
 
 \ 1,000,000 iterations 
-CODE NESTED  \ 14.51 seconds
+\ V .73 14.51 seconds  
+\ V .81 10.11 seconds 
+CODE NESTED  
     100 #FOR
       100 #FOR
           100 #FOR
@@ -47,7 +49,9 @@ CODE FASTER  \ 14.18 seconds
 ;CODE
 
 \ 1,000,000 iterations 
-CODE DEEPER  \ 35.1 seconds
+\ v .73 35.1 seconds   
+\ V.81  23.8 seconds 
+CODE DEEPER  
     10 #FOR
       10 #FOR
         10 #FOR
