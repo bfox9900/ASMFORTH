@@ -283,9 +283,9 @@ HEX
     TOS 3RD ! ;
 
 : SWAP  ( n1 n2 -- n2 n1) 
-      TOS R0 !  
+      TOS W !  
       NOS TOS !  
-      R0 NOS ! ; 
+      W NOS ! ; 
 
 \  ****  ANS FORTH WORDS USE THE DATA STACK ****
 : ALIGNED ( n -- n)    TOS 1+  TOS -2 #AND ;
