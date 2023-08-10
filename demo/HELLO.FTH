@@ -1,0 +1,10 @@
+\ "hello world" in ASM Forth II
+INCLUDE DSK7.VDPLIBII
+
+ASMFORTH 
+
+CREATE TXT  S" Hello World!" S,
+
+CODE HELLO
+    0 #  TXT #  COUNT SWAP  VWRITE 
+;CODE

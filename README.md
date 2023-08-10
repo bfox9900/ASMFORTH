@@ -12,7 +12,7 @@ An Assembly language version of program did the same job in 10 seconds.
 
 So the stack VM paradigm just adds too many instructions to really fly on the old 9900.  When each instruction can use 14 to 28 clock cycles, every extra instruction is a killer. 
 
-See the demo folder for an example of the sieve benchmark in Camel99 Forth and in ASMForth. 
+See the demo folder for an example of the sieve benchmark in Camel99 Forth and in ASMForth.  The ASMForth version runs in 9.25 seconds.
 
 ## Features
 - Used like a Forth Assembler but with Forth-like syntax

@@ -1,31 +1,32 @@
 \ VDPLIB.FTH library  for ASMForth II           2023 Mar Brian Fox
+CR .( Modified for version 0.81 )
 
 HOST
 HEX
-8800 EQU VDPRD
-8802 EQU VDPSTS
-8C00 EQU VDPWD
-8C02 EQU VDPWA
+8800 CONSTANT VDPRD
+8802 CONSTANT VDPSTS
+8C00 CONSTANT VDPWD
+8C02 CONSTANT VDPWA
 
 ASMFORTH  
 \ VDPA! takes arg from TOS but leaves it on the stack 
 : VDPA! ( Vaddr -- Vaddr) \ set vdp address (read mode)
     R1 STWP,
     0 LIMI,
-    9 (R1)  VDPWA @@ C!  \ write odd byte from TOS (ie: R4)
-    TOS     VDPWA @@ C!  \ MOV writes the even byte to the port address
+    9 (R1)  VDPWA C!  \ write odd byte from TOS (ie: R4)
+    TOS     VDPWA C!  \ MOV writes the even byte to the port address
 ;
 
 : VC@   ( addr -- c)
     VDPA! 
     TOS OFF
-    VDPRD @@  9 (R1) C!  \ read data into odd byte of R4
+    VDPRD @  9 (R1) C!  \ read data into odd byte of R4
     DROP 
 ;
 
 : VC! ( c Vaddr -- )
     TOS 4000 #OR VDPA! 
-    9 (R1) VDPWD @@ C!    \ Odd byte R4, write to screen
+    9 (R1) VDPWD C!    \ Odd byte R4, write to screen
     DROP                  \ refill TOS
 ;
 
@@ -39,11 +40,11 @@ HEX
 ;
 
 : VFILL ( Vaddr cnt char -- )
+    TOS ><         \ swap char bytes 
     TOS R5 !       \ R5 = CHAR
-    R5 ><
-    R0 POP         \ cnt to R0
+    R0  POP        \ cnt to R0
     TOS POP        \ Vaddr to TOS 
-    TOS 4000 #OR  VDPA! 
+    TOS 4000 #OR VDPA! 
     VDPWD R3 #! 
     R0 FOR
         R5 *R3 C!
