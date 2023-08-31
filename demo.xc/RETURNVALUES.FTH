@@ -1,0 +1,7 @@
+\ RETURN VALUES TO HOST FORTH 
+
+HEX 
+: TEST  DEAD #  BEEF #  ABBA #  BAAB # ;
+
+
+: SUBTEST  4 #  2 #  SUB,  ;

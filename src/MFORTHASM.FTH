@@ -13,21 +13,18 @@ ONLY FORTH DEFINITIONS
 NEEDS .S     FROM DSK1.TOOLS
 NEEDS CASE   FROM DSK1.CASE
 
-VOCABULARY XASSEMBLER
+VOCABULARY ASSEMBLER
 
-ONLY FORTH  ALSO XASSEMBLER ALSO FORTH DEFINITIONS
+ONLY FORTH ALSO ASSEMBLER ALSO ASSEMBLER DEFINITIONS
 
-\ target memory management
-VARIABLE TDP   \ target dictionary pointer
-
-\ set where the Cross-assembler puts its code
+\    ** THE CROSS COMPILER **  :-)
 HEX
-: ORG   ( addr -- ) TDP ! ;
-: NEW   2000 2000 FF FILL   1FFF H ! ; \ allocate the entire HEAP
+: ORG   ( addr -- ) H ! ;
+: NEW   2000 2000 FF FILL   2000 ORG ; 
 
 \ Target versions of HERE and ALLOT
-: THERE  ( -- addr) TDP @ ;
-: TALLOT ( n -- )   TDP +! ;
+: THERE  ( -- addr) H @ ;
+: TALLOT ( n -- )   H +! ;
 
 \ integer and byte "Target" compilers
 : T,     ( n -- )   THERE !  2 TALLOT ;
@@ -36,7 +33,7 @@ HEX
 \ ===================================================
 CR .( Loading at ) DP @ HEX U.
 
-XASSEMBLER DEFINITIONS
+ASSEMBLER DEFINITIONS
 DECIMAL
  0 CONSTANT  R0    1 CONSTANT  R1
  2 CONSTANT  R2    3 CONSTANT  R3
@@ -118,8 +115,12 @@ A000 GGOP ADD,  B000 GGOP ADDB, 8000 GGOP CMP, 9000 GGOP CMPB,
 
 : 0OP     CREATE ,  DOES> @ T, ;
 
-0340 0OP IDLE,   0360 0OP RSET,  03C0 0OP CKOF,
-03A0 0OP CKON,   03E0 0OP LREX,  0380 0OP RTWP,
+0340 0OP IDLE,   
+0360 0OP RSET,  
+03C0 0OP CKOF,
+03A0 0OP CKON,   
+03E0 0OP LREX,  
+0380 0OP RTWP,
 
 : ROP     CREATE , DOES> @ + T, ;
 02C0 ROP STST,
@@ -184,13 +185,6 @@ CR .( Structured branches and loops...)
 
 3000 GCOP LDCR,
 3400 GCOP STCR,
-
-HEX
-\ Wycove assembler register syntax:
-: @@      020 ;  \ symbolic addressing
-: **      010 +  ;  \ indirect addressing
-: *+      030 +  ;  \ indirect addressing, auto-increment
-: ()      20  +  ;  \ indexed addressing
 
 CR .( Pseudo instructions...)
 : RT,     ( -- )  R11 ** B, ;

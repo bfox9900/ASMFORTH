@@ -9,15 +9,23 @@ HEX
 \ define the string
 CREATE TXT  S" Hello World!" S,
 
-: MAIN 
+CODE MAIN 
 \ set the VDP address to >0000 with write bit set
-     0  VDPWA C!  \ VDP address LSB character store 
-    40  VDPWA C!  \ VDP address MSB + "write" bit character store 
-
-    TXT # COUNT
-    FOR
-        COUNT VDPWD C!  
+    0 # 
+    TOS VDPWA C!   \ VDP address LSB character store 
+    DROP 
+    40 #
+    TOS VDPWA C!  \ VDP address MSB + "write" bit character store 
+    DROP 
+    TXT # 
+    TOS R0 C!     \ byte count -> R0
+    TOS INC,      \ skip past byte count 
+    R0 8 SRA,     \ shift the byte to low side 
+    R0 FOR 
+        *TOS+ VDPWD C! 
     NEXT
     DROP
-;
+NEXT,
+ENDCODE 
+
 
