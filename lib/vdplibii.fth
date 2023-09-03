@@ -27,7 +27,7 @@ ASMFORTH
 : VC! ( c Vaddr -- )
     TOS 4000 #OR VDPA! 
     9 (R1) VDPWD C!    \ Odd byte R4, write to screen
-    DROP                  \ refill TOS
+    DROP               \ refill TOS
 ;
 
 HEX
