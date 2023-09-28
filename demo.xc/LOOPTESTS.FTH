@@ -12,7 +12,7 @@ HERE
     DROP     \ clean the stack 
 ;
 HERE  
-HOST SWAP - DECIMAL  . .( bytes)
+HOST SWAP - DECIMAL  . .( bytes) \ 36 BYTES
 
 COMPILER HEX 
 TARGET VARIABLE X

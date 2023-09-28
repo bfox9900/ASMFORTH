@@ -310,6 +310,9 @@ HEX
 : UNTIL  UNTIL, ; 
 : REPEAT REPEAT, ; 
 
+\ "not until"  From Charles Moore Machine Forth 
+: -UNTIL NC UNTIL ;  
+
 CR .( FOR/NEXT *NEW* FASTER IN REGISTER )
 \ Simple 'nestable' loop.
 \ ARG is any valid cell argument, which is stored in R11
@@ -329,12 +332,12 @@ CR .( FOR/NEXT *NEW* FASTER IN REGISTER )
 
 : NEXT  ( -- )   
     R11 1-      \ DEC  R11 
-    NC UNTIL    \ JOC  BEGIN 
+    -UNTIL      \ JOC  BEGIN 
     R11 RPOP ;  \ MOV *RP+,R11  
 
-: NEXT2  \ dect loop counter by 2 
+: NEXT2         \ dect loop counter by 2 
     R11 2-  
-    NC UNTIL 
+    -UNTIL 
     R11 RPOP ; 
 
 CR .( sub-routine creator)
@@ -439,7 +442,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.82 Aug 10 2023"
+    PAGE ." ASMForth II  V0.83 Sept 28 2023"
     ASMFORTH
     ABORT ;
 

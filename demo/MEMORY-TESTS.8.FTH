@@ -34,3 +34,18 @@ CODE DOWHILE
       REPEAT
       R5 TOS !  \ put result in TOS register
 ;CODE
+
+CODE NOTUNTIL 
+      X R5 #!  \ put address of X into R5 
+      FFFF #   \ number onto the Forth data stack 
+      BEGIN
+        \ inc X by 2 via a register 
+        *R5 2+  \ means at the address in R5, inc by 2 
+        
+        \ OR do directly this way 
+        X 2+  
+      
+        TOS 1- \ decrement top of data stack 
+      -UNTIL
+      R5 TOS !  \ put result in TOS register
+;CODE
