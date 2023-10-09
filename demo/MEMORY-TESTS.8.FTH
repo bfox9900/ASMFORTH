@@ -6,15 +6,14 @@ VARIABLE X
 VARIABLE Y 
 
 CODE FORLOOP 
-  R0 OFF         \ create an accumulator register  
-  X R1 #!        \ address of X -> R1
-  FF00 #FOR      \ FOR is a down counting loop using the Return stack  
-       X 2+      \ inc X 
-       X @ R0 +  \ fetch x  add to RO 
-       R1 @+  Y +!  
+  0 #            \ TOP of stack is our up counter 
+  FFFF #FOR      \ FOR is a down counting loop using the Return stack  
+      TOS 1+  
+      TOS X !
+      X @ Y +!  
   NEXT     
   DUP        
-  Y @ TOS !       \ put number in TOS for Forth to use  
+  X @ TOS !       \ put number in TOS for Forth to use  
 ;CODE    
 
 HEX
