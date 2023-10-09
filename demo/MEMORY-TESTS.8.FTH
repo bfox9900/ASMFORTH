@@ -13,7 +13,7 @@ CODE FORLOOP
       X @ Y +!  
   NEXT     
   DUP        
-  X @ TOS !       \ put number in TOS for Forth to use  
+  Y @ TOS !       \ put number in TOS for Forth to use  
 ;CODE    
 
 HEX

@@ -10,6 +10,7 @@ HEX
 CREATE TXT  S" Hello World!" S,
 
 CODE MAIN 
+    0 LIMI,        \ disable interrupts 
 \ set the VDP address to >0000 with write bit set
     0040 #  
     TOS VDPWA C!  \ VDP address LSB character store 

@@ -79,7 +79,7 @@ HEX
 
 CODE TEST    
      GRAPHICS       
-     42 # 6 #  0 # 0 # SPRITE0  
+     42 # 6 #  0 # 0 #  SPRITE0  
 ;CODE 
  
 DECIMAL
