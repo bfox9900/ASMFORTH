@@ -4,7 +4,7 @@ HOST
 : FIB ( x -- y )   \ RECURSIVE
 	DUP 2 > 
     IF  DUP  1- RECURSE 
-	    SWAP 2- RECURSE +  EXIT 
+	      SWAP 2- RECURSE +  EXIT 
 	THEN 
 	DROP 1 ; \ 20 FIB  5.3 seconds 
 
