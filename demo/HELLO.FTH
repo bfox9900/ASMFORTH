@@ -11,16 +11,17 @@ CREATE TXT  S" Hello World!" S,
 
 CODE MAIN 
 \ set the VDP address to >0000 with write bit set
-    0 # 
-    TOS VDPWA C!   \ VDP address LSB character store 
-    DROP 
-    40 #
+    0040 #  
+    TOS VDPWA C!  \ VDP address LSB character store 
+    TOS >< 
     TOS VDPWA C!  \ VDP address MSB + "write" bit character store 
     DROP 
+
     TXT # 
-    TOS R0 C!     \ byte count -> R0
-    TOS INC,      \ skip past byte count 
-    R0 8 SRA,     \ shift the byte to low side 
+    *TOS R0 C!     \ byte count -> R0
+    R0 8 RSHIFT 
+    R0 1-        \ for loop needs 1 less
+    TOS 1+        \ skip past byte count 
     R0 FOR 
         *TOS+ VDPWD C! 
     NEXT
@@ -28,4 +29,5 @@ CODE MAIN
 NEXT,
 ENDCODE 
 
+\ usage: PAGE MAIN 
 

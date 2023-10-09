@@ -31,7 +31,7 @@ HOST
 :  1MILLION   CR ."  1 million nest/unnest operations" RUN ;
 
 CR .( start demo like this: )
-\ ELAPSE 1MILLION 
+CR .(   ELAPSE 1MILLION  )
 
 
 \ recompile with tailcall optimization operator ( -; )
@@ -48,4 +48,4 @@ ASMFORTH
 CODE RUN    20TH  ;CODE 
 
 HOST 
-:  1MILLION2   CR ." Optimized 1M nest/unnest operations" RUN ;
+:  1MILLIONTC   CR ." Optimized 1M nest/unnest operations" RUN ;
