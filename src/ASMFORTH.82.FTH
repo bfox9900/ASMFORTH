@@ -147,7 +147,7 @@ ASMFORTH
 \       02 BYTE R1 #!   \ load 02 as low bits of R1 
 : #!     ( n REG -- )   ?REGISTER SWAP LI, ; \ n -> REG
 
-\ addr literal to register 
+\ add literal no. to register 
 : #+!    ( lit reg -- ) ?REGISTER SWAP  AI, ;
 
 
@@ -311,7 +311,7 @@ HEX
 : REPEAT REPEAT, ; 
 
 \ "not until"  From Charles Moore Machine Forth 
-: -UNTIL NC UNTIL ;  
+: -UNTIL    NC UNTIL ;  
 
 CR .( FOR/NEXT *NEW* FASTER IN REGISTER )
 \ Simple 'nestable' loop.
