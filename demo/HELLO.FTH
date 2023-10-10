@@ -32,5 +32,5 @@ CODE MAIN
     NEXT,
 ENDCODE 
 
-\ usage: PAGE MAIN 
+\ usage: PAGE MAIN CR
 
