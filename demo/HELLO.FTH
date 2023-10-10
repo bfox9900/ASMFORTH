@@ -27,7 +27,8 @@ CODE MAIN
         *TOS+ VDPWD C! 
     NEXT
     DROP
-NEXT,
+    
+    NEXT,
 ENDCODE 
 
 \ usage: PAGE MAIN 
