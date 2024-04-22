@@ -9,7 +9,8 @@ HEX
 \ define the string
 CREATE TXT  S" Hello World!" S,
 
-: VDPADDR 
+: VDPADDR!
+    0 LIMI, 
     TOS ><        \ swap bytes 
     TOS VDPWA C!  \ VDP address LSB character store 
     TOS ><        \ swap bytes 
@@ -17,21 +18,20 @@ CREATE TXT  S" Hello World!" S,
     DROP 
 ;
 
-CODE MAIN 
-    0 LIMI,        \ disable interrupts 
-\ set the VDP address to >0000 with write bit set
-    4000 # VDPADDR
-    TXT # 
-    *TOS R0 C!     \ byte count -> R0
-    R0 8 RSHIFT 
-    R0 1-          \ for loop needs 1 less
-    TOS 1+         \ skip past byte count 
-    R0 FOR         \ get argument from R0 
-       TOS @+ VDPWD C! 
-    NEXT
-    DROP
+\ character address and VDP address auto-increments
+: C@EMIT+  ( addr -- addr++) TOS @+ VDPWD C!  ;
 
-    NEXT,
+: TYPE  ( addr length -- )
+    TOS R0 ! DROP   \ pop length into R0, address to TOS 
+    R0 1-           \ for loop needs 1 less    
+    R0 FOR   C@EMIT+   NEXT DROP    
+;
+
+CODE MAIN 
+    \ VDP address set to >0000 with write bit set
+    4000 # VDPADDR!
+    TXT # COUNT TYPE 
+ NEXT,
 ENDCODE 
 
 \ usage: PAGE MAIN CR

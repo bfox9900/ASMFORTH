@@ -21,6 +21,7 @@
 \ 10. Changed LD to #! to be consistent with other immediate instructions
 \ 11. .80  Added <src> AND <DST> to make @ and ! smart 
 \ 12. .81 Changed FOR NEXT to use R11 as the loop index
+\ 13  2024: ;.82  made R8 the for/next loop index
 
 \
 \                 Code comparisons VERSION 0.8
@@ -61,7 +62,7 @@
 \ R5   temp
 \ SP   data stack pointer
 \ RP   return stack pointer
-\ R8   temp 
+\ R8   FOR/NEXT loop index register  
 \ R9   Forth interpreter pointer 
 \ R10  holds NEXT address
 \ R11  sub-routine linkage
@@ -315,40 +316,42 @@ HEX
 
 CR .( FOR/NEXT *NEW* FASTER IN REGISTER )
 \ Simple 'nestable' loop.
-\ ARG is any valid cell argument, which is stored in R11
-\ Use R11 as a loop index.  Use  nn RP @ 1-  to STEP down faster.
-\ Use a register if you need an up-counter
+\ ARG is any valid cell argument, which is stored in R8, loop index.  
+\ Use  nn RP @ 1-  to STEP down faster.
+\ Use another  register if you need an up-counter
 
 : FOR   ( arg --) 
-    R11 RPUSH 
-    ( arg) R11 !  
+    R8 RPUSH 
+    ( arg) R8 !  
     BEGIN ; 
 
 \ Alternative using literal number, N goes thru TOS -> R11 
 : #FOR  ( arg --)  
-    R11 RPUSH      \ save R11  
-    ( arg) R11 #!  \ LI R11,arg
+    R8 RPUSH      \ save R11  
+    ( arg) R8 #!  \ LI R11,arg
     BEGIN ;
 
 : NEXT  ( -- )   
-    R11 1-      \ DEC  R11 
+    R8 1-       \ DEC  R11 
     -UNTIL      \ JOC  BEGIN 
-    R11 RPOP ;  \ MOV *RP+,R11  
+    R8 RPOP ;   \ MOV *RP+,R11  
 
 : NEXT2         \ dect loop counter by 2 
-    R11 2-  
+    R8 2-  
     -UNTIL 
-    R11 RPOP ; 
+    R8 RPOP ; 
 
-CR .( sub-routine creator)
-\ subs call themselves when invoked by compiling a BL instruction
-\ into the program
-MACRO: :
+CR .( MACRO: to create native sub-routines)
+
+\ these MACRO words compile the enter code to save the R11
+\ At runtime these sub-routines compile a BL to themselves 
+MACRO: :     \ asmforth COLON creates a native sub-routine 
 \ compile time action
-   CREATE  !CSP
-           R11 RPUSH,        \ compile "enter sub-routine" ( 2 instructions)
-                             \ <--- your program code compiles here
-   DOES> ( sub-addr) @@ BL,  \ Runtime: compile BL to this sub-routine
+   CREATE                 
+        !CSP                \ remember data stack position. error detection
+        R11 RPUSH,          \ compile "enter sub-routine" ( 2 instructions)
+                            \ <--- your program code compiles here
+   DOES> ( sub-addr) @@ BL, \ Runtime: compile BL to this sub-routine
 ;MACRO 
 
 
@@ -356,7 +359,7 @@ MACRO: :
 MACRO: ;   ?CSP  R11 RPOP,  RT,   ;MACRO 
 
 \ -----------------------------------------------
-\ Hi-level Forth word macros 
+\ Hi-level Forth word compiled as native sub-routines 
 ASMFORTH 
 MACRO: COUNT  ( Caddr -- addr len )
     DUP

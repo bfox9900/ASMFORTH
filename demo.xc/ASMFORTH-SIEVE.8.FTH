@@ -11,10 +11,17 @@
 \ * ~10 seconds on stock console
 
 \ * ASMForth II .81 version runs in 9.26 seconds 
-COMPILER 
+HOST 
+NEEDS ELAPSE FROM DSK1.ELAPSE  \ for timing 
+
+ASMFORTH  
 
 DECIMAL 8190 CONSTANT SIZE
 HEX     2000 CONSTANT FLAGS   \ array in Low RAM 
+
+\ ** note: FILLW is an ASMFORTH colon definition. 
+\ It makes a native code subroutine that CANNOT be invoked by Forth,
+\  only by another ASMFORTH colon word or by a CODE word. 
 
 : FILLW ( addr size U --)  
     R0 POP         \ size in R0 for FOR to pickup 
@@ -25,44 +32,56 @@ HEX     2000 CONSTANT FLAGS   \ array in Low RAM
     DROP 
 ;                 
 
-: TEST  3000 #  1000 #  BEEF #  FILLW CALL  ;
+\ We can make register "variables" for clarity 
+\ some might say it's unnecessary
 
-: DO-PRIME ( -- n)  
+R0 CONSTANT #0  \ numerical zero 
+R3 CONSTANT i    \ LOOP index 
+R5 CONSTANT F[]  \ array 
+R1 CONSTANT X    \ temp register variable 
+R2 CONSTANT Y    \ temp register variable 
+
+HOST 
+: (Y)   (R2) ;  \ use register Y as indexed addresser 
+
+ASMFORTH 
+\ we use CODE here because it makes a word that can be called 
+\ from Forth by using its name.
+CODE DO-PRIME ( -- n)  
   FLAGS # SIZE # 0101 # FILLW
 
 \ inits 
   R0 OFF               \ 0 constant
-  R3 OFF               \ clear I register
-
-  FLAGS R5 #!          \ array base address 
-  SIZE R8 #!           \ size of array 
+  i  OFF               \ clear I register
+  FLAGS F[] #!         \ array base address 
   
   0 #                  \ prime # counter on Forth stack (ie: in R4)
-  SIZE #FOR            \ load a constant directly to R11 counter 
-  R5 @+ R0 CMPB        \ FLAGS byte-compared to 0 
+
+  SIZE #FOR            \ load a constant directly to R8 loop counter 
+  F[] @+ #0 CMPB       \ FLAGS byte-compared to 0, auto inc F[]
   <> IF                \ not equal to zero ? 
-      R3 R1 !          \ I -> R1
-      R1 2*  
-      3 R1 #+!         \ R1 3+
-      R3 R2 !          \ I -> R2 ( R2 is K index) 
-      R1 R2 +          \ PRIME K +! 
+      i X !           \ I -> x
+      X 2*  
+      3 X #+!         \ X 3+
+      i Y !           \ I -> R2 ( R2 is K index) 
+      X Y +           \ PRIME K +! 
       BEGIN  
-        R2 R8 CMP   \ K SIZE compare 
+        Y SIZE #CMP  \ K SIZE compare 
       < WHILE  
-        R0 FLAGS (R2) C! \ reset byte FLAGS(R2)
-        R1 R2 +        \ PRIME K +! 
+        #0 FLAGS (R2) C! \ reset byte FLAGS(R2)
+        X Y +        \ PRIME K +! 
       REPEAT 
       TOS 1+           \ increment count of primes
     THEN 
-    R3 1+              \ bump LOOP index register
+    i 1+              \ bump LOOP index register
   NEXT 
-;
+;CODE
 
 HOST   ( Switch back to Host Forth )
 DECIMAL 
 : PRIMES ( -- )
    PAGE ."  10 Iterations"
-   10 0 DO   DO-PRIME RUN CR . ." primes"  LOOP
+   10 0 DO   DO-PRIME  CR . ." primes"  LOOP
    CR ." Done!"
 ;
 

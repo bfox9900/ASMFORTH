@@ -1,6 +1,7 @@
 \ ASMFORTH LOOP TESTS
 
 \ Type  COLD   to restart ASMFORTH II 
+ASMFORTH
 
 HEX
 CODE DOUNTIL  \ smallest loop 
@@ -27,6 +28,7 @@ CODE DOWHILE
 \ It will run unto TOS<0 (*it runs until tos= -1 * )
 \ It does not consume a register while running because 
 \ the counter is on the return stack
+HEX
 CODE FORNEXT 
      FFFF #FOR 
         
@@ -47,20 +49,27 @@ CODE FORNEXTREG
 
 
 \ nesting is simple because of the return stack
+
+\ BUT!!! If we use # to push a number onto the data stack,
+\ we must clean up after ourself when we end the loop. 
 ASMFORTH 
 : INNER               \ ASMFORTH colon makes a nestable sub-routine with return stack
-     1000 # 
+     FFFF # 
      TOS FOR          \ FOR NEXT also uses return stack for downcounter
   
      NEXT 
+     DROP
 ;
 
 : OUTER     \ code words can be called from HOST Forth 
-   1000 # 
+   5 # 
    TOS FOR 
        INNER   \ call the inner loop.
    NEXT 
+   DROP
 ;
+
+: EMPTY  ;
 
 CODE  RUN     OUTER  ;CODE   \ code words are callable from HOST Forth
     
