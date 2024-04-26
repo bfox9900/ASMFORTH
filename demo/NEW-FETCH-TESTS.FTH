@@ -20,7 +20,7 @@ CODE TEST1  ( -- n)
 \ @ compiles a register indirect operation 
 CODE TEST2   ( -- n)  
     X R1 #!         \ address of X -> R1 
-    0 #             \ Put zero on top of Forth stack 
+    0 #             \ Push zero on top of Forth stack 
     R1 @ TOS !      \ fetch address in R1 -> TOS 
 ;CODE 
       

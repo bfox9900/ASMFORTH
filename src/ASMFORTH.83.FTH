@@ -271,6 +271,7 @@ HEX
 : CMPB  ( reg gad) <DST> CMPB, ;
 : #CMP  ( reg lit) SWAP ?REGISTER SWAP CI, ;
 
+
 \ ********* ANS/ISO Forth, Stack operators ****************
 : DUP   ( n -- n n) TOS PUSH ;
 : DROP  ( n -- )    TOS POP  ;
@@ -361,6 +362,9 @@ NATIVE: ;   ?CSP  R11 RPOP,  RT,   ;NATIVE
 \ -----------------------------------------------
 \ Hi-level Forth word compiled as native sub-routines 
 ASMFORTH 
+
+NATIVE: 0=     TOS 0 CI,  EQ  ;NATIVE
+
 NATIVE: COUNT  ( Caddr -- addr len )
     DUP
     NOS 1+
@@ -453,3 +457,4 @@ LOCK
 INCLUDE DSK1.SAVESYS
 
 ' STARTUP SAVESYS DSK7.ASMFORTHII
+
