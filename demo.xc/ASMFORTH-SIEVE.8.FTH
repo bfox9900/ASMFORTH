@@ -40,7 +40,7 @@ R1 CONSTANT X    \ temp register variable
 R2 CONSTANT K    \ inner loop register variable 
 
 HOST 
-: (K)   (R2) ;  \ use register Y as indexed addresser 
+: (K)   (R2) ;  \ use register K as indexed addresser 
 
 ASMFORTH 
 \ we use CODE here because it makes a word that can be called 
