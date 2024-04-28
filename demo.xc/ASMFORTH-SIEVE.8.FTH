@@ -56,8 +56,8 @@ CODE DO-PRIME ( -- n)
   0 #                  \ prime # counter on Forth stack (ie: in R4)
 
   SIZE #FOR            \ load a constant directly to R8 loop counter 
-  MEM @+ #0 CMPB       \ FLAGS byte-compared to 0, auto inc MEM
-  <> IF                \ not equal to zero ? 
+    MEM @+ #0 CMPB     \ FLAGS byte-compared to 0, auto inc MEM
+    <> IF              \ not equal to zero ? 
       i X !            \ I -> x
       X 2*  
       3 X #+!          \ this is a load immediate instruction
