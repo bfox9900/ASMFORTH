@@ -32,7 +32,7 @@ HEX     2000 CONSTANT FLAGS   \ array in Low RAM
     DROP 
 ;                 
 
-\ make register "variables" for clarity 
+\ make register "variables" for code clarity 
 R0 CONSTANT #0   \ numerical zero 
 R3 CONSTANT i    \ LOOP index 
 R5 CONSTANT MEM  \ array base address 
