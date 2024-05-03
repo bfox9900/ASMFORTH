@@ -1,0 +1,48 @@
+FILLW 
+   DFAE  0647  dect R7                     (14)
+   DFB0  C5CB  mov  R11,*R7                (30)
+   
+   DFB2  C036  mov  *R6+,R0                (30)
+   DFB4  C076  mov  *R6+,R1                (30)
+   DFB6  0647  dect R7                     (14)
+   DFB8  C5C8  mov  R8,*R7                 (30)
+   DFBA  C200  mov  R0,R8                  (18)
+   DFBC  CC44  mov  R4,*R1+                (34)
+   DFBE  0648  dect R8                     (14)
+   DFC0  18FD  joc  >dfbc                  (14)
+
+   DFC2  C237  mov  *R7+,R8               
+   DFC4  C136  mov  *R6+,R4               
+   
+   DFC6  C2F7  mov  *R7+,R11              
+   DFC8  045B  b    *R11      
+
+DO-PRIME 
+   E036  04C0  clr  R0                     (14)
+   E038  04C3  clr  R3                     (14)
+   E03A  0205  li   R5,>2000               (20)
+   E03E  0646  dect R6                     (14)
+   E040  C584  mov  R4,*R6                 (30)
+   E042  0204  li   R4,>0000               (20)
+   E046  0647  dect R7                     (14)
+   E048  C5C8  mov  R8,*R7                 (30)
+   E04A  0208  li   R8,>1ffe               (20)
+   E04E  9035  cb   *R5+,R0                (28)
+   E050  130E  jeq  >e06e                  (12)
+   E052  C043  mov  R3,R1                  (18)
+   E054  0A11  sla  R1,1                   (18)
+   E056  0221  ai   R1,>0003               (22)
+   E05A  C083  mov  R3,R2                  (18)
+>  E05C  A081  a    R1,R2                 
+   E05E  0282  ci   R2,>1ffe              
+   E062  1504  jgt  >e06c                 
+   E064  D880  movb R0,@>2000(R2)         
+   E068  A081  a    R1,R2                 
+   E06A  10F9  jmp  >e05e                 
+   E06C  0584  inc  R4                    
+   E06E  0583  inc  R3                    
+   E070  0608  dec  R8                    
+   E072  18ED  joc  >e04e                 
+   E074  C237  mov  *R7+,R8        
+   E076  045A  b    *R10                  
+ 

@@ -342,6 +342,12 @@ CR .( FOR/NEXT *NEW* FASTER IN REGISTER )
     -UNTIL 
     R8 RPOP ; 
 
+: #NEXT ( n --)  \ dect loop counter by 2 
+    R8 #+!  
+    -UNTIL 
+    R8 RPOP ; 
+
+
 CR .( NATIVE: to create native sub-routines)
 
 \ these NATIVE words compile the enter code to save the R11
@@ -449,7 +455,7 @@ HEX
     INIT-WORDLISTS
     NEW.  
     E4 7 VWTR
-    PAGE ." ASMForth II  V0.83 Apr 21 2024"
+    PAGE ." ASMForth II  V0.84 Apr 29 2024"
     ASMFORTH
     ABORT ;
 
