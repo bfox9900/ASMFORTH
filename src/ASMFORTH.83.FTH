@@ -52,12 +52,12 @@
 \ BUT they must be restored before exiting a routine. 
 
 \ /////////// REGISTER USAGE \\\\\\\\\\\
-\ R0   temp
-\ R1   temp
-\ R2   temp
-\ R3   temp 
-\ R4   TOS Accumulator -or temp 
-\ R5   temp
+\ R0   scratch
+\ R1   scratch
+\ R2   scratch
+\ R3   scratch 
+\ R4   TOS Accumulator -or scratch 
+\ R5   scratch
 \ SP   data stack pointer
 \ RP   return stack pointer
 \ R8   FOR/NEXT loop index register  
@@ -65,9 +65,9 @@
 \ R10  holds NEXT address
 \ R11  sub-routine linkage
 \ R12  CRU I/O
-\ R13  for BWLP -or- temp 
-\ R14  for BWLP -or- temp 
-\ R15  for BWLP -or- temp 
+\ R13  for BWLP -or- scratch 
+\ R14  for BWLP -or- scratch 
+\ R15  for BWLP -or- scratch 
 
 
 NEEDS DUMP FROM DSK1.TOOLS
@@ -283,9 +283,9 @@ HEX
     TOS 3RD ! ;
 
 : SWAP  ( n1 n2 -- n2 n1) 
-      TOS W !  
+      TOS R5 !  
       NOS TOS !  
-      W NOS ! ; 
+      R5 NOS ! ; 
 
 \  ****  ANS FORTH WORDS USE THE DATA STACK ****
 : ALIGNED ( n -- n)    TOS 1+  TOS -2 #AND ;
