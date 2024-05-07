@@ -23,28 +23,26 @@
 \ 12. .81 Changed FOR NEXT to use R11 as the loop index
 \ 13  2024: ;.82  made R8 the for/next loop index
 
-\
-\                 Code comparisons VERSION 0.8
-\ TI Assembler Syntax        ASMForth Syntax 
-\ -------------------        ---------------
-\               register to register 
-\               --------------------
+\                Code comparisons VERSION 0.83
+
+\   TI Assembler                ASMForth Equivalent  
+\ -------------------         -------------------------
+\ * n/a                         HEX 
 \       MOV  R1,R4                  R1 R4 ! 
 \       MOV *R1,R4                  R1 @ R4 ! 
 \       MOV *R1+,R4                 R1 @+ R4 ! 
 
-\       memory to register/register to memory 
-\       -------------------------------------
-\ MEAT  EQU  >BEEF             HEX BEEF CONSTANT MEAT 
-\ LABEL DATA 0000                  VARIABLE LABEL   
-\ LABL2 DATA >DEAD                 CREATE LABL2   DEAD , 
-\       LI  R0,MEAT                MEAT R0 #!
-\       MOV @LABEL,R4              LABEL @ R4 ! 
-\       MOV R3,@LABEL              R3 LABEL ! 
+\ data 
+\ MEAT  EQU  >BEEF              BEEF CONSTANT MEAT 
+\ LABEL DATA 0000               VARIABLE LABEL   
+\ LABL2 DATA >DEAD              CREATE LABL2 DEAD , 
+\ TABL  BSS  >100               CREATE TABL  100 ALLOT 
 
-\                   memory to memory 
-\                   ----------------
-\       MOV @LABL2,@LABEL           LABL2 @ LABEL ! 
+\       LI  R0,MEAT             MEAT R0 #!
+\       AI  R0,7                   7 R0 #+!
+\       MOV @LABEL,R4           LABEL @ R4 ! 
+\       MOV R3,@LABEL           R3 LABEL ! 
+\       MOV @LABL2,@LABEL       LABL2 @ LABEL ! 
 
 
 \ ************************************************************************
