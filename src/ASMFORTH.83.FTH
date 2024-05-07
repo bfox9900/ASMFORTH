@@ -324,14 +324,14 @@ CR .( FOR/NEXT *NEW* FASTER IN REGISTER )
     ( arg) R8 !  
     BEGIN ; 
 
-\ Alternative using literal number, N goes thru TOS -> R11 
+\ Alternative using literal number, N goes thru TOS -> R8
 : #FOR  ( arg --)  
-    R8 RPUSH      \ save R11  
+    R8 RPUSH      \ save R8 
     ( arg) R8 #!  \ LI R11,arg
     BEGIN ;
 
 : NEXT  ( -- )   
-    R8 1-       \ DEC  R11 
+    R8 1-       \ DEC  R8
     -UNTIL      \ JOC  BEGIN 
     R8 RPOP ;   \ MOV *RP+,R11  
 
@@ -348,26 +348,26 @@ CR .( FOR/NEXT *NEW* FASTER IN REGISTER )
 
 CR .( NATIVE: to create native sub-routines)
 
+
 \ these NATIVE words compile the enter code to save the R11
 \ At runtime these sub-routines compile a BL to themselves 
-NATIVE: :     \ asmforth COLON creates a native sub-routine 
+: NATIVE:     \ asmforth COLON creates a native sub-routine 
 \ compile time action
    CREATE                 
         !CSP                \ remember data stack position. error detection
         R11 RPUSH,          \ compile "enter sub-routine" ( 2 instructions)
                             \ <--- your program code compiles here
    DOES> ( sub-addr) @@ BL, \ Runtime: compile BL to this sub-routine
-;NATIVE 
-
+;
 
 \ "exit sub-routine" ( 2 instructions)
-NATIVE: ;   ?CSP  R11 RPOP,  RT,   ;NATIVE 
+: ;NATIVE   ?CSP   R11 RPOP,  RT,   ; 
 
 \ -----------------------------------------------
 \ Hi-level Forth word compiled as native sub-routines 
 ASMFORTH 
 
-NATIVE: 0=     TOS 0 CI,  EQ  ;NATIVE
+NATIVE: 0=     TOS 0 CI, EQ  ;NATIVE
 
 NATIVE: COUNT  ( Caddr -- addr len )
     DUP
@@ -383,7 +383,7 @@ NATIVE: BOUNDS ( adr len -- adr2 adr1)
 ;NATIVE 
 
 NATIVE: ?TERMINAL ( -- ?) 
-    0020 @@ BL,  NOT 
+    0020 @@ BL,  NOT   \ calls ROM code to test BREAK key
 ;NATIVE
 
 NATIVE: /STRING ( addr len n -- addr' len' ) 
@@ -425,12 +425,12 @@ NATIVE: U*/ ( n n n -- n )
 ;NATIVE 
 
 NATIVE: U/ ( n n -- n ) \ unsigned divide. FAST but be careful
-    TOS  R0 MOV,       \ divisor->R0    
-        TOS CLR,
-    NOS^ R5 MOV,       \ MOVE low word to r5 
-    R0  TOS DIV,       \ perform unsigned division 
+    TOS  R0 !          \ divisor->R0    
+    TOS OFF 
+    NOS^ R5 !          \ MOVE low word to r5 
+    R0 TOS DIV,        \ perform unsigned division 
 ;NATIVE 
-
+ 
 NATIVE: CALL ( arg -- ) 
 \ Use @ for call thru register 
 \ Use @@ for call to an address 
