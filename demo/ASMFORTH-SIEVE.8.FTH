@@ -28,7 +28,7 @@ HEX     2000 CONSTANT FLAGS   \ array in Low RAM
     NOS^ R0 !      \ POP "next on stack" into R0 (size) (MOV *SP+,RO)
     NOS^ R1 !      \ POP address into R1
     R0 FOR         \ FOR takes the R0 argument into loop index register
-       TOS *R1+ !  \ write U to addr, bump addr by 2
+       TOS R1 @+ !  \ write U to addr in R1, bump addr by 2
     NEXT2          \ *NEW* counts down by 2 
     DROP           \ drop U which refills the TOS register
 ;                 
