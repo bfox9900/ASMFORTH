@@ -348,7 +348,6 @@ CR .( FOR/NEXT *NEW* FASTER IN REGISTER )
 
 CR .( NATIVE: to create native sub-routines)
 
-
 \ these NATIVE words compile the enter code to save the R11
 \ At runtime these sub-routines compile a BL to themselves 
 : NATIVE:     \ asmforth COLON creates a native sub-routine 
