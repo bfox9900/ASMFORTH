@@ -143,7 +143,7 @@ ASMFORTH
 ;
 
 ASMFORTH
-\ load register with literal argument
+\ load register with literal argument and enforce Register argument
 \ usage:   BEEF R1 #!
 \       02 BYTE R1 #!   \ load 02 as low bits of R1
 : #!     ( n REG -- )   ?REGISTER SWAP LI, ; \ n -> REG
